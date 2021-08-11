@@ -35,12 +35,12 @@ function App() {
           <Switch>
             <Route path="/" component={HomeScreen} exact></Route>
 
-            <Route path="/inputoutput" component={InputOutput}></Route>
+            <Route path="/inputoutput/:id" component={InputOutput}></Route>
 
 
-            <Route path="/BatteryInverter" component={BatteryInverter}></Route>
+            <Route path="/BatteryInverter/:id" component={BatteryInverter}></Route>
 
-            <Route path="/RelayStatus" component={RelayStatus}></Route>
+            <Route path="/RelayStatus/:id" component={RelayStatus}></Route>
 
             {/* <Route path="/signin" component={SigninScreen}></Route>
 

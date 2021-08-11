@@ -22,7 +22,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { CircularProgress } from "@material-ui/core";
 
-const ENDPOINT = "http://192.168.0.91:5000";
+const ENDPOINT = "http://192.168.1.218:5000";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -48,21 +48,25 @@ const useStyles = makeStyles({
   },
 });
 
-export default function BatteryInverter(props) {
+export default function InputOutput(props) {
+
+  const [ip, setIp] = useState(props.match.params.id);
+
   const [socket, setSocket] = useState(null);
-  const [modeState, setModeState] = useState(false);
-  const [batVoltState, setBatVoltState] = useState(false);
-  const [batCCurState, setBatCCurState] = useState(false);
+  const [voltage, setVoltage] = useState(false);
+  const [frequency, setFrequency] = useState(false);
+  const [mode, setMode] = useState(false);
 
-  const [batRRemState, setBatRRemState] = useState(false);
-  const [batTempState, setBatTempState] = useState(false);
-  const [peukertNumberState, setPeukertNumberState] = useState(false);
-
-  const [peukertCapacityState, setPeukertCapacityState] = useState(false);
-  const [batteryOpenVoltageState, setBatteryOpenVoltageState] = useState(false);
-  const [invOccState, setInvOccState] = useState(false);
-
-  const [invAccState, setInvAccState] = useState(false);
+  const [opVal, setoOpVal] = useState(false);
+  const [opVal2, setOpVal2] = useState(false);
+  const [opFreq, setOpFreq] = useState(false);
+  const [opCurr, setOpCurr] = useState(false);
+  const [opCurr2, setOpCurr2] = useState(false);
+  const [apparentPower, setApparentPower] = useState(false);
+  const [apparentPower2, setApparentPower2] = useState(false);
+  const [powerFactor, setPowerFactor] = useState(false);
+  const [opFactState, setOpFactState] = useState(false);
+  const [opKWhState, setOpKWhState] = useState(false);
 
   // function createData(name, data) {
   //   return { name, data };
@@ -73,8 +77,9 @@ export default function BatteryInverter(props) {
 
   // ];
 
-  const ip = props.match.params.id;
-  console.log("ip:", ip);
+  // const ip = props.match.params.id;
+  // console.log("ip:", ip);
+
   // const ip = "192.168.0.90";
 
   useEffect(() => {
@@ -85,71 +90,101 @@ export default function BatteryInverter(props) {
 
       setSocket(sk);
 
-      sk.emit(`BatteryInverter`, ip);
-      console.log(" sk.emit(`BatteryInverter`, ip);");
+      sk.emit("ip", ip);
+      console.log('sk.emit("ip", ip)')
 
-      sk.on("modeState", (data) => {
+      sk.emit(`InputOutput`, ip);
+      console.log("InputOutput");
+
+      sk.on("voltage", (data) => {
         if (data) {
-          setModeState(data);
+          console.log("volt:", data);
+          setVoltage(data);
         }
       });
-      sk.on("batVoltState", (data) => {
+      sk.on("frequency", (data) => {
         if (data) {
-          setBatVoltState(data);
+          console.log("frequency:", data);
+
+          setFrequency(data);
         }
       });
 
-      sk.on("batCCurState", (data) => {
+      sk.on("mode", (data) => {
         if (data) {
-          setBatCCurState(data);
+          console.log("mode:", data);
+
+          setMode(data);
         }
       });
 
-      sk.on("batRRemState", (data) => {
+      sk.on("opVal", (data) => {
         if (data) {
           console.log("opVal:", data);
 
-          setBatRRemState(data);
+          setoOpVal(data);
         }
       });
 
-      sk.on("batTempState", (data) => {
+      sk.on("opVal2", (data) => {
         if (data) {
-          setBatTempState(data);
+          console.log("opVal2:", data);
+
+          setOpVal2(data);
         }
       });
 
-      sk.on("peukertNumberState", (data) => {
+      sk.on("opFreq", (data) => {
         if (data) {
-          setPeukertNumberState(data);
+          console.log("opFreq:", data);
+
+          setOpFreq(data);
         }
       });
 
-      sk.on("peukertCapacityState", (data) => {
+      sk.on("opCurr", (data) => {
         if (data) {
-          setPeukertCapacityState(data);
+          setOpCurr(data);
         }
       });
 
-      sk.on("batteryOpenVoltageState", (data) => {
+      sk.on("opCurr2", (data) => {
         if (data) {
-          setBatteryOpenVoltageState(data);
+          setOpCurr2(data);
         }
       });
 
-      sk.on("invOccState", (data) => {
+      sk.on("apparentPower", (data) => {
         if (data) {
-          setInvOccState(data);
+          setApparentPower(data);
         }
       });
 
-      sk.on("invAccState", (data) => {
+      sk.on("apparentPower2", (data) => {
         if (data) {
-          setInvAccState(data);
+          setApparentPower2(data);
+        }
+      });
+
+      sk.on("powerFactor", (data) => {
+        if (data) {
+          setPowerFactor(data);
+        }
+      });
+
+      sk.on("opFactState", (data) => {
+        if (data) {
+          setOpFactState(data);
+        }
+      });
+
+      sk.on("opKWhState", (data) => {
+        if (data) {
+          setOpKWhState(data);
         }
       });
     }
-  }, [socket]);
+  }, [socket,ip]);
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -183,161 +218,45 @@ export default function BatteryInverter(props) {
               <Table className={classes.table} aria-label="customized table">
                 <TableHead>
                   <TableRow>
-                    <StyledTableCell>Output Parameterss</StyledTableCell>
+                    <StyledTableCell>Input Parameters</StyledTableCell>
                     <StyledTableCell></StyledTableCell>
                   </TableRow>
                 </TableHead>
-                {modeState ||
-                batVoltState ||
-                batCCurState ||
-                batRRemState ||
-                batTempState ||
-                peukertNumberState ||
-                peukertCapacityState ||
-                batteryOpenVoltageState ? (
-                  <>
-                    {" "}
-                    <TableBody>
-                      <TableRow>24 VDC</TableRow>
-
-                      <StyledTableRow>
-                        {batVoltState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              Battery Voltage
-                            </StyledTableCell>
-
-                            <StyledTableCell>
-                              {batVoltState} VDC
-                            </StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
-
-                      <StyledTableRow>
-                        {batCCurState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              Charging Current
-                            </StyledTableCell>
-
-                            <StyledTableCell>{batCCurState} A</StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
-
-                      <StyledTableRow>
-                        {batRRemState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              Runtime Remaining
-                            </StyledTableCell>
-
-                            <StyledTableCell>{batRRemState} °C</StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
-
-                      <StyledTableRow>
-                        {batTempState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              External Temperature
-                            </StyledTableCell>
-
-                            <StyledTableCell>{batTempState} °C</StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
-
-                      <StyledTableRow>
-                        {peukertNumberState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              Peukert Number
-                            </StyledTableCell>
-
-                            <StyledTableCell>
-                              {peukertNumberState} Ah
-                            </StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
-
-                      <StyledTableRow>
-                        {peukertCapacityState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              Capacity
-                            </StyledTableCell>
-
-                            <StyledTableCell>
-                              {peukertCapacityState} Ah
-                            </StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
-
-                      <StyledTableRow>
-                        {batteryOpenVoltageState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              Battery Open-Circuit Voltage
-                            </StyledTableCell>
-
-                            <StyledTableCell>
-                              {batteryOpenVoltageState} VDC
-                            </StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
-                    </TableBody>
-                  </>
-                ) : (
-                  <>
-                    {" "}
-                    <CircularProgress />
-                  </>
-                )}
-              </Table>
-            </TableContainer>
-            <br />
-            <TableContainer component={Paper}>
-              <Table className={classes.table} aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell>Battery Parameters</StyledTableCell>
-                    <StyledTableCell></StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                {invOccState || invAccState ? (
+                {voltage || frequency || mode ? (
                   <>
                     <TableBody>
-                      <TableRow></TableRow>
-                      <TableRow>Inverter Parameters</TableRow>
-
                       <StyledTableRow>
-                        {invOccState && (
+                        {voltage && (
                           <>
                             <StyledTableCell component="th" scope="row">
-                              Accumulated Line Failures
+                              Voltage
                             </StyledTableCell>
 
-                            <StyledTableCell>
-                              {invOccState} Time
-                            </StyledTableCell>
+                            <StyledTableCell>{voltage} VAC</StyledTableCell>
                           </>
                         )}
                       </StyledTableRow>
 
                       <StyledTableRow>
-                        {invAccState && (
+                        {frequency && (
                           <>
                             <StyledTableCell component="th" scope="row">
-                              Accumulated Backup Time
+                              Frequency
                             </StyledTableCell>
 
-                            <StyledTableCell>{invAccState}</StyledTableCell>
+                            <StyledTableCell>{frequency} HZ</StyledTableCell>
+                          </>
+                        )}
+                      </StyledTableRow>
+
+                      <StyledTableRow>
+                        {mode && (
+                          <>
+                            <StyledTableCell component="th" scope="row">
+                              Mode
+                            </StyledTableCell>
+
+                            <StyledTableCell>{mode}</StyledTableCell>
                           </>
                         )}
                       </StyledTableRow>
@@ -349,6 +268,165 @@ export default function BatteryInverter(props) {
                     <CircularProgress />
                   </>
                 )}{" "}
+              </Table>
+            </TableContainer>
+            <br />
+            <TableContainer component={Paper}>
+              <Table className={classes.table} aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell>Output Parameterss</StyledTableCell>
+                    <StyledTableCell></StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                {opKWhState ||
+                opFactState ||
+                powerFactor ||
+                apparentPower2 ||
+                apparentPower2 ||
+                apparentPower ||
+                opCurr2 ||
+                opCurr ||
+                opFreq ||
+                opVal2 ||
+                opVal ? (
+                  <>
+                    {" "}
+                    <TableBody>
+                      <TableRow>Vout Qualified</TableRow>
+
+                      <StyledTableRow>
+                        {opVal && (
+                          <>
+                            <StyledTableCell component="th" scope="row">
+                              Voltage
+                            </StyledTableCell>
+
+                            <StyledTableCell>{opVal} VAC</StyledTableCell>
+                          </>
+                        )}
+                      </StyledTableRow>
+
+                      <StyledTableRow>
+                        {opVal2 && (
+                          <>
+                            <StyledTableCell component="th" scope="row">
+                              Voltage 2
+                            </StyledTableCell>
+
+                            <StyledTableCell>{opVal2} VAC</StyledTableCell>
+                          </>
+                        )}
+                      </StyledTableRow>
+
+                      <StyledTableRow>
+                        {opFreq && (
+                          <>
+                            <StyledTableCell component="th" scope="row">
+                              Frequency
+                            </StyledTableCell>
+
+                            <StyledTableCell>{opFreq} Hz</StyledTableCell>
+                          </>
+                        )}
+                      </StyledTableRow>
+
+                      <StyledTableRow>
+                        {opCurr && (
+                          <>
+                            <StyledTableCell component="th" scope="row">
+                              Current
+                            </StyledTableCell>
+
+                            <StyledTableCell>{opCurr} A</StyledTableCell>
+                          </>
+                        )}
+                      </StyledTableRow>
+
+                      <StyledTableRow>
+                        {opCurr2 && (
+                          <>
+                            <StyledTableCell component="th" scope="row">
+                              Current 2
+                            </StyledTableCell>
+
+                            <StyledTableCell>{opCurr2} A</StyledTableCell>
+                          </>
+                        )}
+                      </StyledTableRow>
+
+                      <StyledTableRow>
+                        {apparentPower && (
+                          <>
+                            <StyledTableCell component="th" scope="row">
+                              Apparent Power
+                            </StyledTableCell>
+
+                            <StyledTableCell>
+                              {apparentPower} VA
+                            </StyledTableCell>
+                          </>
+                        )}
+                      </StyledTableRow>
+
+                      <StyledTableRow>
+                        {apparentPower2 && (
+                          <>
+                            <StyledTableCell component="th" scope="row">
+                              Apparent Power2
+                            </StyledTableCell>
+
+                            <StyledTableCell>
+                              {apparentPower2} VA
+                            </StyledTableCell>
+                          </>
+                        )}
+                      </StyledTableRow>
+
+                      {/* 
+                  <StyledTableRow>
+                    {powerFactor && (
+                      <>
+                        <StyledTableCell component="th" scope="row">
+                        Power Factor
+                        </StyledTableCell>
+
+                        <StyledTableCell>{powerFactor}</StyledTableCell>
+                      </>
+                    )}
+                  </StyledTableRow> */}
+
+                      <StyledTableRow>
+                        {opFactState && (
+                          <>
+                            <StyledTableCell component="th" scope="row">
+                              Power Factor
+                            </StyledTableCell>
+
+                            <StyledTableCell>{opFactState}</StyledTableCell>
+                          </>
+                        )}
+                      </StyledTableRow>
+
+                      <StyledTableRow>
+                        {opKWhState && (
+                          <>
+                            <StyledTableCell component="th" scope="row">
+                              Energy Meter
+                            </StyledTableCell>
+
+                            <StyledTableCell>{opKWhState} KWh</StyledTableCell>
+                          </>
+                        )}
+                      </StyledTableRow>
+                    </TableBody>
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    <CircularProgress />
+                  </>
+                )}
               </Table>
             </TableContainer>
             <Typography component="div"></Typography>

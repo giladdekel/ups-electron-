@@ -20,9 +20,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import axios from "Axios";
 
-import convert from "xml-js";
 const ENDPOINT = "http://192.168.0.91:5000";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -65,33 +63,6 @@ export default function Home() {
   const [powerFactor, setPowerFactor] = useState(false);
   const [opFactState, setOpFactState] = useState(false);
   const [opKWhState, setOpKWhState] = useState(false);
-
-  const addresses = [{ ip: "192.168.0.90" }, { ip: "192.168.0.92" }];
-  setInterval(() => {
-    if (addresses) {
-      addresses.forEach((address) => {
-        axios
-          .get(`http://${address.ip}/xml/get_live_status.xml?io_status`)
-          .then(function (response) {
-            console.log("addressIP: ", address.ip);
-            console.log("responseeeeeeeeeeeeeeeeeeeeee: ", response); // this will print xml data structure
-
-            const data = convert.xml2js(response.data, {
-              compact: true,
-              spaces: 2,
-            });
-
-            console.log("dataaaaaaaaaaaaaaaaaaaa:", data);
-          })
-          .catch(function (error) {
-            console.log("eroorrrr: ", error);
-          })
-          .then(function () {
-            // always executed
-          });
-      });
-    }
-  }, 10000);
 
   // function createData(name, data) {
   //   return { name, data };

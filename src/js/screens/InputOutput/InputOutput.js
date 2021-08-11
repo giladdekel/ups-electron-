@@ -22,7 +22,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { CircularProgress } from "@material-ui/core";
 
-const ENDPOINT = "http://192.168.0.91:5000";
+const ENDPOINT = "http://192.168.1.218:5000";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -48,7 +48,9 @@ const useStyles = makeStyles({
   },
 });
 
-export default function InputOutput() {
+export default function InputOutput(props) {
+  const [ip, setIp] = useState(props.match.params.id);
+
   const [socket, setSocket] = useState(null);
   const [voltage, setVoltage] = useState(false);
   const [frequency, setFrequency] = useState(false);
@@ -65,6 +67,8 @@ export default function InputOutput() {
   const [opFactState, setOpFactState] = useState(false);
   const [opKWhState, setOpKWhState] = useState(false);
 
+  const [error, setError] = useState(false);
+
   // function createData(name, data) {
   //   return { name, data };
   // }
@@ -74,18 +78,22 @@ export default function InputOutput() {
 
   // ];
 
-  const ip = "192.168.0.90";
+  // const ip = props.match.params.id;
+  // console.log("ip:", ip);
+
+  // const ip = "192.168.0.90";
 
   useEffect(() => {
+    const sk = socketIOClient(ENDPOINT);
+
+    sk.emit("ip", ip);
+    console.log('sk.emit("ip", ip)');
+
+    sk.emit(`InputOutput`, ip);
+    console.log(" sk.emit(`InputOutput`, ip);");
     if (!socket) {
       // console.log("useEffect in Room Screen :");
-
-      const sk = socketIOClient(ENDPOINT);
-
       setSocket(sk);
-
-      sk.emit("InputOutput", ip);
-      console.log("InputOutput");
 
       sk.on("voltage", (data) => {
         if (data) {
@@ -174,8 +182,12 @@ export default function InputOutput() {
           setOpKWhState(data);
         }
       });
+
+      sk.on("error", () => {
+        setError(true);
+      });
     }
-  }, [socket]);
+  }, [socket, ip]);
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -204,6 +216,7 @@ export default function InputOutput() {
           {" "}
           <CssBaseline />
           <Container maxWidth="sm">
+            {/* {error && <h1>error</h1>} */}
             <h1 className="rainbow-text">UPS Contorol </h1>{" "}
             <TableContainer component={Paper}>
               <Table className={classes.table} aria-label="customized table">
@@ -270,7 +283,17 @@ export default function InputOutput() {
                     <StyledTableCell></StyledTableCell>
                   </TableRow>
                 </TableHead>
-                {opKWhState||opFactState||powerFactor || apparentPower2 || apparentPower2|| apparentPower|| opCurr2||opCurr||opFreq||opVal2||opVal ? (
+                {opKWhState ||
+                opFactState ||
+                powerFactor ||
+                apparentPower2 ||
+                apparentPower2 ||
+                apparentPower ||
+                opCurr2 ||
+                opCurr ||
+                opFreq ||
+                opVal2 ||
+                opVal ? (
                   <>
                     {" "}
                     <TableBody>
