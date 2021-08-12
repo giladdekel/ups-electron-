@@ -23,6 +23,13 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
+import { useDispatch, useSelector } from "react-redux";
+import { listAddresses } from "../../actions/addressActions";
+import { ADDRESS_DETAILS_RESET } from "./../../constants/addressConstants";
+
+import { CircularProgress } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
+
 import axios from "axios";
 
 const drawerWidth = 240;
@@ -81,11 +88,17 @@ function ResponsiveDrawer(props) {
     textDecoration: "none",
   };
 
-  let arrOfIp = [
-    { name: "ups1", ip: "192.168.0.90" },
-    { name: "ups2", ip: "192.168.0.89" },
-    { name: "ups3", ip: "192.168.0.88" },
-  ];
+  // let arrOfIp = [
+  //   { name: "ups1", ip: "192.168.0.90" },
+  //   { name: "ups2", ip: "192.168.0.89" },
+  //   { name: "ups3", ip: "192.168.0.88" },
+  // ];
+
+  // let links = [
+  //   { name: "inputoutput", num: "1" },
+  //   { name: "batteryinverter", num: "2" },
+  //   { name: "relaystatus", num: "3" },
+  // ];
 
   const [addresses, setAddresses] = useState(false);
 
@@ -114,6 +127,18 @@ function ResponsiveDrawer(props) {
               <InboxIcon />
             </ListItemIcon>
             <ListItemText primary="Home" />
+          </ListItem>
+        </NavLink>
+      </List>
+
+
+      <List>
+        <NavLink to="/address/list" activeStyle={activeStyle}>
+          <ListItem button>
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary="Addresses List" />
           </ListItem>
         </NavLink>
       </List>

@@ -16,6 +16,13 @@ import BatteryInverter from "./screens/BatteryInverter/BatteryInverter";
 
 
 import RelayStatus from "./screens/RelayStatus/RelayStatus";
+import AddressListScreen from "./screens/AddressListScreen/AddressListScreen";
+
+import AddressCreateScreen from "./screens/AddressCreateScreen/AddressCreateScreen";
+// import SigninScreen from "./screens/SigninScreen/SigninScreen";
+import AddressEditScreen from "./screens/AddressEditScreen/AddressEditScreen";
+
+// import NotFoundPage from "./screens/notfound/notfound.component";
 
 // import RegisterScreen from "./screens/RegisterScreen/RegisterScreen";
 
@@ -35,12 +42,18 @@ function App() {
           <Switch>
             <Route path="/" component={HomeScreen} exact></Route>
 
-            <Route path="/inputoutput/:id" component={InputOutput}></Route>
+            <Route path="/address/list" component={AddressListScreen} exact ></Route>
+
+            <Route path="/address/create" component={AddressCreateScreen} exact > </Route>
+
+            <Route path="/address/:id/edit" component={AddressEditScreen} exact ></Route>
+
+            <Route path="/inputoutput/:id" component={InputOutput} exact></Route>
 
 
-            <Route path="/BatteryInverter/:id" component={BatteryInverter}></Route>
+            <Route path="/BatteryInverter/:id" component={BatteryInverter} exact></Route>
 
-            <Route path="/RelayStatus/:id" component={RelayStatus}></Route>
+            <Route path="/RelayStatus/:id" component={RelayStatus} exact></Route>
 
             {/* <Route path="/signin" component={SigninScreen}></Route>
 
