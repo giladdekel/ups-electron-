@@ -313,7 +313,7 @@ export default function AddressListScreen(props) {
                     ip: {keyName} fault: {alerts[keyName]}
                   </span>
                 </li>
-              )).sort((a,b)=>a-b)}
+              ))}
             <TableContainer component={Paper}>
               {" "}
               <Table className={classes.table} aria-label="customized table">
