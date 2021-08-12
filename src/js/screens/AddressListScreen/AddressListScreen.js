@@ -306,14 +306,25 @@ export default function AddressListScreen(props) {
               }
     */}
             {/* {dataAlert && <h1>{dataAlert} </h1>} */}
-            {alerts &&
+
+            {/* {alerts &&
               Object.keys(alerts).map((keyName, i) => (
                 <li className="travelcompany-input" key={i}>
                   <span className="input-label">
                     ip: {keyName} fault: {alerts[keyName]}
                   </span>
                 </li>
+              ))} */}
+
+            {alerts &&
+              Object.entries(alerts).sort(([key1],[key2])=>Number(key1>key2)-0.5).map(([keyName], index) => (
+                <li className="travelcompany-input" key={index}>
+                  <span className="input-label">
+                    ip: {keyName} fault: {alerts[keyName]}
+                  </span>
+                </li>
               ))}
+
             <TableContainer component={Paper}>
               {" "}
               <Table className={classes.table} aria-label="customized table">
