@@ -112,9 +112,30 @@ function ResponsiveDrawer(props) {
     }
   }
 
+  const addressUpdate = useSelector((state) => state.addressUpdate);
+  const {
+    loading: loadingUpdate,
+    error: errorUpdate,
+    success: successUpdate,
+  } = addressUpdate;
+
+  const addressDelete = useSelector((state) => state.addressDelete);
+  const {
+    loading: loadingDelete,
+    error: errorDelete,
+    success: successDelete,
+  } = addressDelete;
+
+  const addressCreate = useSelector((state) => state.addressCreate);
+  const {
+    loading: loadingCreate,
+    error: errorCreate,
+    success: successCreate,
+  } = addressCreate;
+
   useEffect(() => {
     getAddresses();
-  }, []);
+  }, [successUpdate, successDelete, successCreate]);
 
   const drawer = (
     <div>
@@ -131,7 +152,6 @@ function ResponsiveDrawer(props) {
         </NavLink>
       </List>
 
-
       <List>
         <NavLink to="/address/list" activeStyle={activeStyle}>
           <ListItem button>
@@ -142,63 +162,26 @@ function ResponsiveDrawer(props) {
           </ListItem>
         </NavLink>
       </List>
+      <Divider />
 
-      {addresses && addresses.data.map((address) => (
-        <>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography className={classes.heading}>{address.name}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography>
-                <List>
-                  <NavLink
-                    to={`/inputOutput/${address.ip}`}
-                    activeStyle={activeStyle}
-                  >
-                    <ListItem button>
-                      <ListItemIcon>
-                        <InboxIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Input Output" />
-                    </ListItem>
-                  </NavLink>
-
-                  <NavLink
-                    to={`/BatteryInverter/${address.ip}`}
-                    activeStyle={activeStyle}
-                  >
-                    <ListItem button>
-                      <ListItemIcon>
-                        <InboxIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Battery & Inverter" />
-                    </ListItem>
-                  </NavLink>
-
-                  <NavLink
-                    to={`/RelayStatus/${address.ip}`}
-                    activeStyle={activeStyle}
-                  >
-                    <ListItem button>
-                      <ListItemIcon>
-                        <InboxIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Relay & Load Shed" />
-                    </ListItem>
-                  </NavLink>
-                </List>
-              </Typography>
-            </AccordionDetails>
-          </Accordion>
-
-          {/* <Divider /> */}
-        </>
-      ))}
+      {addresses &&
+        addresses.data.map((address) => (
+          <>
+            <List>
+              <NavLink
+                to={`/address/info/${address.ip}`}
+                activeStyle={activeStyle}
+              >
+                <ListItem button>
+                  <ListItemIcon>
+                    <InboxIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={address.name} />
+                </ListItem>
+              </NavLink>
+            </List>
+          </>
+        ))}
     </div>
   );
 

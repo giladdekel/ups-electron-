@@ -51,7 +51,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function BatteryInverter(props) {
+export default function PowerOutage(props) {
   const [modeState, setModeState] = useState(false);
   const [batVoltState, setBatVoltState] = useState(false);
   const [batCCurState, setBatCCurState] = useState(false);

@@ -1,70 +1,40 @@
-import React, { useState } from "react";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-
-import CssBaseline from "@material-ui/core/CssBaseline";
+import React, { useEffect, useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import BottomNavigation from "@material-ui/core/BottomNavigation";
+import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
+import RestoreIcon from "@material-ui/icons/Restore";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
 import Container from "@material-ui/core/Container";
-
-import { useDispatch, useSelector } from "react-redux";
-import { deleteAddress, listAddresses } from "./../../actions/addressActions";
-import { ADDRESS_DETAILS_RESET } from "./../../constants/addressConstants";
-import { useEffect } from "react";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
-
-import "./AddressListScreen.scss";
-import { CircularProgress, Fab } from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
-import IconButton from "@material-ui/core/IconButton";
-import AddIcon from "@material-ui/icons/Add";
 
 import axios from "axios";
 
 import convert from "xml-js";
 
-// import Link from "@material-ui/core/Link";
-
-import { Link } from "react-router-dom";
-import { Button } from "@material-ui/core/Button";
-let obj = {};
-
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  body: {
-    fontSize: 14,
-  },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
+import { useDispatch, useSelector } from "react-redux";
+import { deleteAddress, listAddresses } from "./../../actions/addressActions";
+import { ADDRESS_DETAILS_RESET } from "./../../constants/addressConstants";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles({
-  table: {
-    minWidth: 700,
+  root: {
+    width: 500,
   },
 });
 
-export default function AddressListScreen(props) {
+export default function AddressInfoScreen(props) {
+  let ip = props.match.params.id;
+  console.log("ip:", ip);
+
+  const classes = useStyles();
+  const [value, setValue] = React.useState(0);
 
   ////////////////////////////////////alerts start ////////////////////////////
 
   const addressList = useSelector((state) => state.addressList);
   const { loading, error, addresses } = addressList;
   // console.log("addresses:", addresses);
+  let makeAction = true;
 
   const addressDelete = useSelector((state) => state.addressDelete);
   const {
@@ -350,122 +320,134 @@ export default function AddressListScreen(props) {
 
   ////////////////////////alerts end//////////////////////////////////////
 
-  const classes = useStyles();
-  // console.log("objFaults:", objFaults);
   return (
-    <React.Fragment>
-      <CssBaseline />
-      {loadingDelete && <CircularProgress />}
-      {errorDelete && <Alert severity="error">{errorDelete}</Alert>}
-      {successDelete && (
-        <Alert severity="success">Address Deleted Successfully</Alert>
-      )}
+    <Container maxWidth="sm">
+      {alerts &&
+        Object.entries(alerts)
+          .sort(([key1], [key2]) => Number(key1 > key2) - 0.5)
+          .map(
+            ([keyName], index) =>
+              alerts[keyName] > 0 && (
+                <Alert key={index} severity="warning">
+                  {" "}
+                  <b>{keyName}</b> - alerts:
+                  {convertAlert(Number(alerts[keyName]))}
+                </Alert>
+              )
+          )}
 
-      <Container maxWidth="md">
-        {loading ? (
-          <CircularProgress />
-        ) : error ? (
-          <Alert severity="error">{error}</Alert>
-        ) : (
-          <>
-            {alerts &&
-              Object.entries(alerts)
-                .sort(([key1], [key2]) => Number(key1 > key2) - 0.5)
-                .map(
-                  ([keyName], index) =>
-                    alerts[keyName] > 0 && (
-                      <Alert key={index} severity="warning">
-                        {" "}
-                        <b>{keyName}</b> - alerts:
-                        {convertAlert(Number(alerts[keyName]))}
-                      </Alert>
-                    )
-                )}
+      {faults &&
+        Object.entries(faults)
+          .sort(([key1], [key2]) => Number(key1 > key2) - 0.5)
+          .map(
+            ([keyName], index) =>
+              faults[keyName] > 0 && (
+                <Alert key={index} severity="warning">
+                  {" "}
+                  <b>{keyName}</b> - faults:
+                  {convertFault(Number(alerts[keyName]))}
+                </Alert>
+              )
+          )}
+      {/* {addresses && console.log("assssssddresses: ", addresses)} */}
+      {/* {alerts &&
+              console.log("Object.entries(alerts): ", Object.entries(alerts))} */}
 
-            {faults &&
+      {/* {alerts && console.log("alerts------: ", alerts)} */}
+
+      {/* // {addresses.filter(a=>a.name)   map(address=> )} */}
+      {/* {faults &&
               Object.entries(faults)
                 .sort(([key1], [key2]) => Number(key1 > key2) - 0.5)
                 .map(
                   ([keyName], index) =>
-                    faults[keyName] > 0 && (
-                      <Alert key={index} severity="warning">
+                    faults[keyName] === -1 && (
+                      <Alert key={index} severity="error">
                         {" "}
-                        <b>{keyName}</b> - faults:
-                        {convertFault(Number(alerts[keyName]))}
+                        <b>{keyName}</b> is off
                       </Alert>
                     )
-                )}
+                )} */}
 
-            {upsError &&
-              upsError.map((ups) => (
-                <Alert key={ups} severity="error">
-                  <b>{ups}</b> is not connected
-                </Alert>
-              ))}
+      {upsError &&
+        upsError.map((ups) => (
+          <Alert key={ups} severity="error">
+            <b>{ups}</b> is not connected
+          </Alert>
+        ))}
 
-            <Fab
-              color="primary"
-              aria-label="add"
-              onClick={() => {
-                props.history.push(`/address/add`);
-              }}
-            >
-              <AddIcon />
-            </Fab>
-            <TableContainer component={Paper}>
-              {" "}
-              <Table className={classes.table} aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell>Name</StyledTableCell>
-                    <StyledTableCell align="right">Ip</StyledTableCell>
-                    <StyledTableCell align="right">Date Add</StyledTableCell>
-                    <StyledTableCell align="right">Edit</StyledTableCell>
-                    <StyledTableCell align="right">Delete</StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {addresses &&
-                    addresses.map((address) => (
-                      <StyledTableRow key={address.name}>
-                        {" "}
-                        <StyledTableCell component="th" scope="row">
-                          {address.name}
-                        </StyledTableCell>
-                        <StyledTableCell align="right">
-                          {address.ip}
-                        </StyledTableCell>
-                        <StyledTableCell align="right">
-                          {address.createdAt.substring(0, 10)}
-                        </StyledTableCell>
-                        <StyledTableCell align="right">
-                          <IconButton color="primary" aria-label="delete">
-                            <EditIcon
-                              className="pointer"
-                              onClick={() => {
-                                props.history.push(
-                                  `/address/${address._id}/edit`
-                                );
-                              }}
-                            />{" "}
-                          </IconButton>
-                        </StyledTableCell>
-                        <StyledTableCell align="right">
-                          <IconButton color="secondary" aria-label="delete">
-                            <DeleteIcon
-                              className="pointer"
-                              onClick={() => deleteHandler(address)}
-                            />{" "}
-                          </IconButton>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </>
-        )}
-      </Container>
-    </React.Fragment>
+      <h1>UPS {ip}</h1>
+
+      <BottomNavigation
+        value={value}
+        onChange={(event, newValue) => {
+          setValue(newValue);
+        }}
+        showLabels
+        className={classes.root}
+      >
+        <BottomNavigationAction
+          onClick={() => {
+            props.history.push(`/UPSSpecification/${ip}`);
+          }}
+          label="UPS Specification"
+          icon={<RestoreIcon />}
+        />
+        <BottomNavigationAction
+          onClick={() => {
+            props.history.push(`/inputOutput/${ip}`);
+          }}
+          label="Input & Output"
+          icon={<RestoreIcon />}
+        />
+        <BottomNavigationAction
+          onClick={() => {
+            props.history.push(`/BatteryInverter/${ip}`);
+          }}
+          label="Battery & Inverter"
+          icon={<RestoreIcon />}
+        />{" "}
+        <BottomNavigationAction
+          onClick={() => {
+            props.history.push(`/RelayStatus/${ip}`);
+          }}
+          label="Relay & Load Shed"
+          icon={<RestoreIcon />}
+        />
+        <BottomNavigationAction
+          onClick={() => {
+            props.history.push(`/UserInput/${ip}`);
+          }}
+          label="User Input"
+          icon={<RestoreIcon />}
+        />
+        <BottomNavigationAction
+          onClick={() => {
+            props.history.push(`/PowerOutage/${ip}`);
+          }}
+          label="Power Outage"
+          icon={<RestoreIcon />}
+        />
+      </BottomNavigation>
+    </Container>
   );
 }
+
+// import React, { useState, useEffect } from "react";
+
+// export default function AddressInfoScreen(props) {
+//   let ip = props.match.params.id;
+//   console.log("ip:", ip);
+
+//   return (
+//     <div>
+//       <button
+//         onClick={() => {
+//           props.history.push(`/inputOutput/${ip}`);
+//         }}
+//       >
+//         adddddddddddddddddddddddddddddddddddddddddddd
+//       </button>
+//     </div>
+//   );
+// }

@@ -5,7 +5,7 @@ import Container from "@material-ui/core/Container";
 import Alert from "@material-ui/lab/Alert";
 
 import AudioPlayer from "react-h5-audio-player";
-import "react-h5-audio-player/lib/styles.css";
+// import "react-h5-audio-player/lib/styles.css";
 // import { notifier } from 'node-notifier';
 import socketIOClient from "socket.io-client";
 
@@ -21,9 +21,11 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { CircularProgress } from "@material-ui/core";
-import axios from "Axios"
 
+import axios from "axios";
 import convert from "xml-js";
+
+// const ENDPOINT = "http://192.168.0.91:5000";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -49,50 +51,99 @@ const useStyles = makeStyles({
   },
 });
 
-export default function RelayStatus(props) {
+export default function BatteryInverter(props) {
+  const [mode, setMode] = useState();
+
+  const [rs0, setRs0] = useState();
+
+  const [ra0, setRa0] = useState();
+
+  const [rs1, setRs1] = useState();
+
+  const [ra1, setRa1] = useState();
+
+  const [rs2, setRs2] = useState();
+
+  const [ra2, setRa2] = useState();
+
+  const [rs3, setRs3] = useState();
+
+  const [ra3, setRa3] = useState();
+
+  const [rs4, setRs4] = useState();
+
+  const [ra4, setRa4] = useState();
+
+  const [rs5, setRs5] = useState();
+
+  const [ra5, setRa5] = useState();
+
+  const [tmr1, setTmr1] = useState();
+  const [tmr2, setTmr2] = useState();
+  const [tmr3, setTmr3] = useState();
+
+  const [rDTAState1Status, setRDTAState1Status] = useState();
+
+  const [rDTAState2Status, setRDTAState2Status] = useState();
+
+  const [error, setError] = useState();
+
+  const [loading, setLoading] = useState();
 
   const ip = props.match.params.id;
-  console.log("ip:", ip);
-
-
-  const [modeState, setModeState] = useState(false);
-  const [batVoltState, setBatVoltState] = useState(false);
-  const [batCCurState, setBatCCurState] = useState(false);
-
-  const [batRRemState, setBatRRemState] = useState(false);
-  const [batTempState, setBatTempState] = useState(false);
-  const [peukertNumberState, setPeukertNumberState] = useState(false);
-
-  const [peukertCapacityState, setPeukertCapacityState] = useState(false);
-  const [batteryOpenVoltageState, setBatteryOpenVoltageState] = useState(false);
-  const [invOccState, setInvOccState] = useState(false);
-
-  const [invAccState, setInvAccState] = useState(false);
-
-  // function createData(name, data) {
-  //   return { name, data };
-  // }
-
-  // const rows = [
-  //   createData("Frozen yoghurt", 159),
-
-  // ];
-
-  // const ip = "192.168.0.90";
+  // console.log("ip:", ip);
 
   useEffect(() => {
-    axios
-      .get(`http://${ip}/xml/get_live_status.xml?battery_inverter`)
-      .then(function (response) {
-        //   console.log("response: ", response); // this will print xml data structure
+    const interval = setInterval(() => {
+      try {
+        axios
+          .get(`http://${ip}/xml/get_live_status.xml?relay_status`)
+          .then(function (response) {
+            //   console.log("response: ", response); // this will print xml data structure
 
-        const data = convert.xml2js(response.data, {
-          compact: true,
-          spaces: 2,
-        });
-        console.log("data:", data);
-      }, []);
-  });
+            const data = convert.xml2js(response.data, {
+              compact: true,
+              spaces: 2,
+            });
+
+            console.log("data:", data.data);
+
+            setMode(data.data.newval[0]._text);
+            setRs0(data.data.newval[1]._text);
+            setRa0(data.data.newval[2]._text);
+            setRs1(data.data.newval[3]._text);
+            setRa1(data.data.newval[4]._text);
+            setRs2(data.data.newval[5]._text);
+            setRa2(data.data.newval[6]._text);
+            setRs3(data.data.newval[7]._text);
+            setRa3(data.data.newval[8]._text);
+            setRs4(data.data.newval[9]._text);
+            setRa4(data.data.newval[10]._text);
+            setRs5(data.data.newval[11]._text);
+            setRa5(data.data.newval[12]._text);
+            setTmr1(data.data.newval[13].countdown._attributes.value);
+            setTmr2(data.data.newval[14].countdown._attributes.value);
+            setTmr3(data.data.newval[15].countdown._attributes.value);
+            setRDTAState1Status(data.data.newval[16]._text);
+            setRDTAState2Status(data.data.newval[17]._text);
+
+            setLoading(false);
+          })
+          .catch(function (error) {
+            console.log("eroorrrr: ", error);
+
+            setError(true);
+          })
+          .then(function () {
+            // always executed
+          });
+      } catch (err) {
+        console.log("err:", err);
+        setError(true);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -107,8 +158,7 @@ export default function RelayStatus(props) {
 
   return (
     <>
-      <h1>hello</h1>
-      {/* <div
+      <div
         style={{
           backgroundImage: `url(https://cdn.pixabay.com/photo/2016/01/19/17/15/windmills-1149604_960_720.jpg)`,
           height: "1000px",
@@ -122,183 +172,286 @@ export default function RelayStatus(props) {
           {" "}
           <CssBaseline />
           <Container maxWidth="sm">
-            <h1 className="rainbow-text">UPS Contorol </h1>{" "}
-            <TableContainer component={Paper}>
-              <Table className={classes.table} aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell>Output Parameterss</StyledTableCell>
-                    <StyledTableCell></StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                {modeState ||
-                batVoltState ||
-                batCCurState ||
-                batRRemState ||
-                batTempState ||
-                peukertNumberState ||
-                peukertCapacityState ||
-                batteryOpenVoltageState ? (
-                  <>
-                    {" "}
-                    <TableBody>
-                      <TableRow>24 VDC</TableRow>
+            <h1 className="rainbow-text"> UPS {ip} - Relay & Load Shed </h1>{" "}
+            {error ? (
+              <Alert severity="error">
+                Error- cheack if the UPS is connected
+              </Alert>
+            ) : (
+              <>
+                {" "}
+                <TableContainer component={Paper}>
+                  <Table
+                    className={classes.table}
+                    aria-label="customized table"
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <StyledTableCell>
+                          Relay Programmable Status
+                        </StyledTableCell>
+                        <StyledTableCell>
+                        </StyledTableCell>
+                        <StyledTableCell>
+                        </StyledTableCell>
+                      </TableRow>
+                    </TableHead>
+                    {rs0 ||
+                    ra0 ||
+                    rs1 ||
+                    ra1 ||
+                    rs2 ||
+                    ra2 ||
+                    rs3 ||
+                    ra3 ||
+                    rs4 ||
+                    ra4 ||
+                    rs5 ||
+                    ra5 ? (
+                      <>
+                        {" "}
+                        <TableBody>
 
-                      <StyledTableRow>
-                        {batVoltState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              Battery Voltage
-                            </StyledTableCell>
+                          <StyledTableRow>
+                            {rs0 && ra0 && (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                  Relay C1
+                                </StyledTableCell>
 
-                            <StyledTableCell>
-                              {batVoltState} VDC
-                            </StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
+                                <StyledTableCell>{rs0}</StyledTableCell>
 
-                      <StyledTableRow>
-                        {batCCurState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              Charging Current
-                            </StyledTableCell>
+                                <StyledTableCell>{ra0}</StyledTableCell>
+                              </>
+                            )}
+                          </StyledTableRow>
 
-                            <StyledTableCell>{batCCurState} A</StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
+                          <StyledTableRow>
+                            {rs1 && ra1 && (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                  Relay C2
+                                </StyledTableCell>
 
-                      <StyledTableRow>
-                        {batRRemState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              Runtime Remaining
-                            </StyledTableCell>
+                                <StyledTableCell>{rs1}</StyledTableCell>
 
-                            <StyledTableCell>{batRRemState} °C</StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
+                                <StyledTableCell>{ra1}</StyledTableCell>
+                              </>
+                            )}
+                          </StyledTableRow>
 
-                      <StyledTableRow>
-                        {batTempState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              External Temperature
-                            </StyledTableCell>
+                          <StyledTableRow>
+                            {rs2 && ra2 && (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                  Relay C3
+                                </StyledTableCell>
 
-                            <StyledTableCell>{batTempState} °C</StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
+                                <StyledTableCell>{rs2}</StyledTableCell>
 
-                      <StyledTableRow>
-                        {peukertNumberState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              Peukert Number
-                            </StyledTableCell>
+                                <StyledTableCell>{ra2}</StyledTableCell>
+                              </>
+                            )}
+                          </StyledTableRow>
 
-                            <StyledTableCell>
-                              {peukertNumberState} Ah
-                            </StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
+                          <StyledTableRow>
+                            {rs3 && ra3 && (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                  Relay C4
+                                </StyledTableCell>
 
-                      <StyledTableRow>
-                        {peukertCapacityState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              Capacity
-                            </StyledTableCell>
+                                <StyledTableCell>{rs3}</StyledTableCell>
 
-                            <StyledTableCell>
-                              {peukertCapacityState} Ah
-                            </StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
+                                <StyledTableCell>{ra3}</StyledTableCell>
+                              </>
+                            )}
+                          </StyledTableRow>
 
-                      <StyledTableRow>
-                        {batteryOpenVoltageState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              Battery Open-Circuit Voltage
-                            </StyledTableCell>
+                          <StyledTableRow>
+                            {rs4 && ra4 && (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                  Relay C5
+                                </StyledTableCell>
 
-                            <StyledTableCell>
-                              {batteryOpenVoltageState} VDC
-                            </StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
-                    </TableBody>
-                  </>
-                ) : (
-                  <>
-                    {" "}
-                    <CircularProgress />
-                  </>
-                )}
-              </Table>
-            </TableContainer>
-            <br />
-            <TableContainer component={Paper}>
-              <Table className={classes.table} aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell>Battery Parameters</StyledTableCell>
-                    <StyledTableCell></StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                {invOccState || invAccState ? (
-                  <>
-                    <TableBody>
-                      <TableRow></TableRow>
-                      <TableRow>Inverter Parameters</TableRow>
+                                <StyledTableCell>{rs4}</StyledTableCell>
 
-                      <StyledTableRow>
-                        {invOccState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              Accumulated Line Failures
-                            </StyledTableCell>
+                                <StyledTableCell>{ra4}</StyledTableCell>
+                              </>
+                            )}
+                          </StyledTableRow>
 
-                            <StyledTableCell>
-                              {invOccState} Time
-                            </StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
+                          <StyledTableRow>
+                            {rs5 && ra5 && (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                  Relay C6
+                                </StyledTableCell>
 
-                      <StyledTableRow>
-                        {invAccState && (
-                          <>
-                            <StyledTableCell component="th" scope="row">
-                              Accumulated Backup Time
-                            </StyledTableCell>
+                                <StyledTableCell>{rs5}</StyledTableCell>
 
-                            <StyledTableCell>{invAccState}</StyledTableCell>
-                          </>
-                        )}
-                      </StyledTableRow>
-                    </TableBody>
-                  </>
-                ) : (
-                  <>
-                    {" "}
-                    <CircularProgress />
-                  </>
-                )}{" "}
-              </Table>
-            </TableContainer>
+                                <StyledTableCell>{ra5}</StyledTableCell>
+                              </>
+                            )}
+                          </StyledTableRow>
+                        </TableBody>
+                      </>
+                    ) : (
+                      <>
+                        {" "}
+                        <CircularProgress />
+                      </>
+                    )}
+                  </Table>
+                </TableContainer>
+                <br />
+
+                <TableContainer component={Paper}>
+                  <Table
+                    className={classes.table}
+                    aria-label="customized table"
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <StyledTableCell>
+                        Load Shed Timer Status
+                        </StyledTableCell>
+                        <StyledTableCell>
+                        </StyledTableCell>
+                 
+                      </TableRow>
+                    </TableHead>
+                    {tmr1 ||
+                    tmr2 ||
+                    tmr3 ? (
+                      <>
+                        {" "}
+                        <TableBody>
+
+
+                        <StyledTableRow>
+                           
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                
+                                </StyledTableCell>
+
+                                <StyledTableCell>Time Remaining</StyledTableCell>
+
+                              </>
+                           
+                          </StyledTableRow>
+
+                          <StyledTableRow>
+                            {tmr1 &&  (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                Timer 1	
+                                </StyledTableCell>
+
+                                <StyledTableCell>{Math.floor(tmr1 / 3600)}hr {Math.floor(tmr1 % 3600 / 60)}min {Math.floor(tmr1 % 3600 % 60)}sec</StyledTableCell>
+
+                              </>
+                            )}
+                          </StyledTableRow>
+
+                          <StyledTableRow>
+                            {tmr2  && (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                Timer 2	
+                                </StyledTableCell>
+
+                                <StyledTableCell>{Math.floor(tmr2 / 3600)}hr {Math.floor(tmr2 % 3600 / 60)}min {Math.floor(tmr2 % 3600 % 60)}sec</StyledTableCell>
+
+                              </>
+                            )}
+                          </StyledTableRow>
+
+                          <StyledTableRow>
+                            {tmr3 &&  (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                Timer 3	
+                                </StyledTableCell>
+
+                                <StyledTableCell>{Math.floor(tmr3 / 3600)}hr {Math.floor(tmr3 % 3600 / 60)}min {Math.floor(tmr3 % 3600 % 60)}sec</StyledTableCell>
+
+                              </>
+                            )}
+                          </StyledTableRow>
+
+                        </TableBody>
+                      </>
+                    ) : (
+                      <>
+                        {" "}
+                        <CircularProgress />
+                      </>
+                    )}
+                  </Table>
+                </TableContainer>
+                <br />
+         
+
+
+
+                <TableContainer component={Paper}>
+                  <Table
+                    className={classes.table}
+                    aria-label="customized table"
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <StyledTableCell>
+                        Time Of Day Action Status
+                        </StyledTableCell>
+                        <StyledTableCell>
+                        </StyledTableCell>
+                        <StyledTableCell>
+                        </StyledTableCell>
+                      </TableRow>
+                    </TableHead>
+                    {rDTAState1Status ||
+                    rDTAState2Status 
+          ? (
+                      <>
+                        {" "}
+                        <TableBody>
+
+                          <StyledTableRow>
+                            {rDTAState1Status && rDTAState2Status && (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                Action Enabled	
+                                </StyledTableCell>
+
+                                <StyledTableCell>{rDTAState1Status}</StyledTableCell>
+
+                                <StyledTableCell>{rDTAState2Status}</StyledTableCell>
+                              </>
+                            )}
+                          </StyledTableRow>
+
+                      </TableBody>
+                      </>
+                    ) : (
+                      <>
+                        {" "}
+                        <CircularProgress />
+                      </>
+                    )}
+                  </Table>
+                </TableContainer>
+                <br />
+         
+              </>
+            )}
             <Typography component="div"></Typography>
           </Container>
         </React.Fragment>
-      </div> */}
+      </div>
     </>
   );
 }

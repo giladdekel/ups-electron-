@@ -5,7 +5,7 @@ import Container from "@material-ui/core/Container";
 import Alert from "@material-ui/lab/Alert";
 
 import AudioPlayer from "react-h5-audio-player";
-import "react-h5-audio-player/lib/styles.css";
+// import "react-h5-audio-player/lib/styles.css";
 // import { notifier } from 'node-notifier';
 import socketIOClient from "socket.io-client";
 
@@ -25,11 +25,7 @@ import { CircularProgress } from "@material-ui/core";
 import axios from "axios";
 import convert from "xml-js";
 
-import { useDispatch, useSelector } from "react-redux";
-import { deleteAddress, listAddresses } from "./../../actions/addressActions";
-import { ADDRESS_DETAILS_RESET } from "./../../constants/addressConstants";
-
-// const ENDPOINT = "http://192.168.1.218:5000";
+// const ENDPOINT = "http://192.168.0.91:5000";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -55,44 +51,43 @@ const useStyles = makeStyles({
   },
 });
 
-export default function InputOutput(props) {
-  // const [ip, setIp] = useState(props.match.params.id);
+export default function UPSSpecification(props) {
+  const [mode, setMode] = useState();
 
-  const [voltage, setVoltage] = useState(false);
-  const [frequency, setFrequency] = useState(false);
-  const [mode, setMode] = useState(false);
+  const [spec_CName, setSpec_CName] = useState();
 
-  const [opVal, setOpVal] = useState(false);
-  const [opVal2, setOpVal2] = useState(false);
-  const [opFreq, setOpFreq] = useState(false);
-  const [opCurr, setOpCurr] = useState(false);
-  const [opCurr2, setOpCurr2] = useState(false);
-  const [apparentPower, setApparentPower] = useState(false);
-  const [apparentPower2, setApparentPower2] = useState(false);
-  const [powerFactor, setPowerFactor] = useState(false);
-  const [opFactState, setOpFactState] = useState(false);
-  const [opKWhState, setOpKWhState] = useState(false);
+  const [spec_FCode, setSpec_FCode] = useState();
 
-  const [lineStatusState, setLineStatusState] = useState(false);
+  const [spec_DName, setSpec_DName] = useState();
+
+  const [spec_PCode, setSpec_PCode] = useState();
+
+  const [spec_UName, setSpec_UName] = useState();
+
+  const [spec_SerName, setSpec_SerName] = useState();
+
+  const [spec_Freq, setSpec_Freq] = useState();
+
+  const [spec_InVolt, setSpec_InVolt] = useState();
+
+  const [spec_OutVA, setSpec_OutVA] = useState();
+
+  const [spec_BatVolt, setSpec_BatVolt] = useState();
+
+  const [spec_ChCur, setSpec_ChCur] = useState();
+
+  const [spec_ChComp, setSpec_ChComp] = useState();
+
+  const [spec_MCUv, setSpec_MCUv] = useState();
+
+  const [spec_RMUv, setSpec_RMUv] = useState();
 
   const [error, setError] = useState(false);
 
   const [loading, setLoading] = useState(true);
-  // function createData(name, data) {
-  //   return { name, data };
-  // }
-
-  // const rows = [
-  //   createData("Frozen yoghurt", 159),
-
-  // ];
-
-  // const ip = props.match.params.id;
+  const ip = props.match.params.id;
   // console.log("ip:", ip);
-
   // const ip = "192.168.0.90";
-  let ip = props.match.params.id;
-  console.log("ip:", ip);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -100,7 +95,7 @@ export default function InputOutput(props) {
 
       try {
         axios
-          .get(`http://${ip}/xml/get_live_status.xml?io_status`)
+          .get(`http://${ip}/xml/get_live_status.xml?ups_spec`)
           .then(function (response) {
             //   console.log("response: ", response); // this will print xml data structure
 
@@ -108,39 +103,27 @@ export default function InputOutput(props) {
               compact: true,
               spaces: 2,
             });
-            // console.log("data:", data);
+            console.log("data:", data);
+
+            setMode(data.data.newval[0]._text);
+            setSpec_CName(data.data.newval[1]._text);
+            setSpec_FCode(data.data.newval[2]._text);
+            setSpec_DName(data.data.newval[3]._text);
+            setSpec_PCode(data.data.newval[4]._text);
+            setSpec_UName(data.data.newval[5]._attributes.id);
+            setSpec_SerName(data.data.newval[6]._text);
+            setSpec_Freq(data.data.newval[7]._text);
+            setSpec_InVolt(data.data.newval[8]._text);
+            setSpec_OutVA(data.data.newval[9]._text);
+            setSpec_BatVolt(data.data.newval[10]._text);
+            setSpec_ChCur(data.data.newval[11]._text);
+            setSpec_ChComp(data.data.newval[12]._text);
+            setSpec_MCUv(data.data.newval[13]._text);
+            setSpec_RMUv(data.data.newval[14]._text);
 
             /// table input
 
             setError(false);
-
-            setVoltage(data.data.translate[1].text.qualval._attributes.value);
-
-            setFrequency(data.data.translate[2].text.qualval._attributes.value);
-
-            setMode(data.data.translate[3].text._text);
-
-            setLineStatusState(data.data.translate[4].text._text);
-            // console.log('lineStatusState:', lineStatusState)
-
-            setOpVal(data.data.translate[5].text.qualval._attributes.value);
-            setOpVal2(data.data.translate[6].text.qualval._attributes.value);
-            setOpFreq(data.data.translate[7].text.qualval._attributes.value);
-            setOpCurr(data.data.translate[8].text.qualval._attributes.value);
-            setOpCurr2(data.data.translate[9].text.qualval._attributes.value);
-            setApparentPower(
-              data.data.translate[10].text.qualval._attributes.value
-            );
-            setApparentPower2(
-              data.data.translate[11].text.qualval._attributes.value
-            );
-            setPowerFactor(
-              data.data.translate[12].text.qualval._attributes.value
-            );
-            setOpFactState(data.data.translate[13].text._text);
-            setOpKWhState(
-              data.data.translate[14].text.qualval._attributes.value
-            );
 
             setLoading(false);
           })
@@ -153,6 +136,7 @@ export default function InputOutput(props) {
             // always executed
           });
       } catch (err) {
+        console.log("err:", err);
         setError(true);
       }
     }, 1000);
@@ -170,10 +154,6 @@ export default function InputOutput(props) {
 
   const classes = useStyles();
 
-  ////////////////////////////////////alerts start ////////////////////////////
-
-  ////////////////////////alerts end//////////////////////////////////////
-
   return (
     <>
       <div
@@ -190,22 +170,14 @@ export default function InputOutput(props) {
           {" "}
           <CssBaseline />
           <Container maxWidth="sm">
-            {/* {error && <h1>error</h1>} */}
-            <h1 className="rainbow-text">
-              Input & Output - {props.match.params.id}{" "}
-            </h1>{" "}
+            <h1 className="rainbow-text"> UPS {ip} - UPS Specification </h1>{" "}
             {error ? (
-              <>
-                <Alert severity="error">
-                  Error- cheack if the UPS is connected
-                </Alert>
-              </>
-            ) : loading ? (
-              <>
-                <CircularProgress />
-              </>
+              <Alert severity="error">
+                Error- cheack if the UPS is connected
+              </Alert>
             ) : (
               <>
+                {" "}
                 <TableContainer component={Paper}>
                   <Table
                     className={classes.table}
@@ -213,211 +185,207 @@ export default function InputOutput(props) {
                   >
                     <TableHead>
                       <TableRow>
-                        <StyledTableCell>Input Parameters</StyledTableCell>
+                        <StyledTableCell>UPS Specification</StyledTableCell>
                         <StyledTableCell></StyledTableCell>
                       </TableRow>
                     </TableHead>
-                    {voltage || frequency || mode ? (
-                      <>
-                        <TableBody>
-                          <StyledTableRow>
-                            {voltage && (
-                              <>
-                                <StyledTableCell component="th" scope="row">
-                                  Voltage
-                                </StyledTableCell>
-
-                                <StyledTableCell>{voltage} VAC</StyledTableCell>
-                              </>
-                            )}
-                          </StyledTableRow>
-
-                          <StyledTableRow>
-                            {frequency && (
-                              <>
-                                <StyledTableCell component="th" scope="row">
-                                  Frequency
-                                </StyledTableCell>
-
-                                <StyledTableCell>
-                                  {frequency} HZ
-                                </StyledTableCell>
-                              </>
-                            )}
-                          </StyledTableRow>
-
-                          <StyledTableRow>
-                            {mode && (
-                              <>
-                                <StyledTableCell component="th" scope="row">
-                                  Mode
-                                </StyledTableCell>
-
-                                <StyledTableCell>{mode}</StyledTableCell>
-                              </>
-                            )}
-                          </StyledTableRow>
-                        </TableBody>
-                      </>
-                    ) : (
-                      <>
-                        {" "}
-                        <CircularProgress />
-                      </>
-                    )}{" "}
-                  </Table>
-                </TableContainer>
-                <br />
-                <TableContainer component={Paper}>
-                  <Table
-                    className={classes.table}
-                    aria-label="customized table"
-                  >
-                    <TableHead>
-                      <TableRow>
-                        <StyledTableCell>Output Parameterss</StyledTableCell>
-                        <StyledTableCell></StyledTableCell>
-                      </TableRow>
-                    </TableHead>
-                    {opKWhState ||
-                    opFactState ||
-                    powerFactor ||
-                    apparentPower2 ||
-                    apparentPower2 ||
-                    apparentPower ||
-                    opCurr2 ||
-                    opCurr ||
-                    opFreq ||
-                    opVal2 ||
-                    opVal ? (
+                    {mode ||
+                    spec_CName ||
+                    spec_FCode ||
+                    spec_DName ||
+                    spec_PCode ||
+                    spec_UName ||
+                    spec_SerName ||
+                    spec_Freq ||
+                    spec_InVolt ||
+                    spec_OutVA ||
+                    spec_BatVolt ||
+                    spec_ChCur ||
+                    spec_ChComp ||
+                    spec_MCUv ||
+                    spec_RMUv ? (
                       <>
                         {" "}
                         <TableBody>
-                          <TableRow>Vout Qualified</TableRow>
 
                           <StyledTableRow>
-                            {opVal && (
+                            {spec_CName && (
                               <>
                                 <StyledTableCell component="th" scope="row">
-                                  Voltage
+                                  Company
                                 </StyledTableCell>
 
-                                <StyledTableCell>{opVal} VAC</StyledTableCell>
+                                <StyledTableCell>{spec_CName}</StyledTableCell>
                               </>
                             )}
                           </StyledTableRow>
 
                           <StyledTableRow>
-                            {opVal2 && (
+                            {spec_FCode && (
                               <>
                                 <StyledTableCell component="th" scope="row">
-                                  Voltage 2
+                                  Factory Code
                                 </StyledTableCell>
 
-                                <StyledTableCell>{opVal2} VAC</StyledTableCell>
+                                <StyledTableCell>{spec_FCode}</StyledTableCell>
                               </>
                             )}
                           </StyledTableRow>
 
                           <StyledTableRow>
-                            {opFreq && (
+                            {spec_DName && (
                               <>
                                 <StyledTableCell component="th" scope="row">
-                                  Frequency
+                                  UPS Model{" "}
                                 </StyledTableCell>
 
-                                <StyledTableCell>{opFreq} Hz</StyledTableCell>
+                                <StyledTableCell>{spec_DName}</StyledTableCell>
                               </>
                             )}
                           </StyledTableRow>
 
                           <StyledTableRow>
-                            {opCurr && (
+                            {spec_PCode && (
                               <>
                                 <StyledTableCell component="th" scope="row">
-                                  Current
+                                  Product Code
                                 </StyledTableCell>
 
-                                <StyledTableCell>{opCurr} A</StyledTableCell>
+                                <StyledTableCell>{spec_PCode}</StyledTableCell>
                               </>
                             )}
                           </StyledTableRow>
 
                           <StyledTableRow>
-                            {opCurr2 && (
+                            {spec_UName && (
                               <>
                                 <StyledTableCell component="th" scope="row">
-                                  Current 2
+                                Unit Name / ID	
                                 </StyledTableCell>
 
-                                <StyledTableCell>{opCurr2} A</StyledTableCell>
+                                <StyledTableCell></StyledTableCell>
                               </>
                             )}
                           </StyledTableRow>
 
                           <StyledTableRow>
-                            {apparentPower && (
+                            {spec_SerName && (
                               <>
                                 <StyledTableCell component="th" scope="row">
-                                  Apparent Power
+                                  Serial Number
                                 </StyledTableCell>
 
                                 <StyledTableCell>
-                                  {apparentPower} VA
+                                  {spec_SerName} Ah
                                 </StyledTableCell>
                               </>
                             )}
                           </StyledTableRow>
 
                           <StyledTableRow>
-                            {apparentPower2 && (
+                            {spec_Freq && (
                               <>
                                 <StyledTableCell component="th" scope="row">
-                                  Apparent Power2
+                                  Rated Frequency
                                 </StyledTableCell>
 
                                 <StyledTableCell>
-                                  {apparentPower2} VA
+                                  {spec_Freq} Hz
                                 </StyledTableCell>
                               </>
                             )}
                           </StyledTableRow>
 
-                          {/* 
-                  <StyledTableRow>
-                    {powerFactor && (
-                      <>
-                        <StyledTableCell component="th" scope="row">
-                        Power Factor
-                        </StyledTableCell>
-
-                        <StyledTableCell>{powerFactor}</StyledTableCell>
-                      </>
-                    )}
-                  </StyledTableRow> */}
-
                           <StyledTableRow>
-                            {opFactState && (
+                            {spec_InVolt && (
                               <>
                                 <StyledTableCell component="th" scope="row">
-                                  Power Factor
-                                </StyledTableCell>
-
-                                <StyledTableCell>{opFactState}</StyledTableCell>
-                              </>
-                            )}
-                          </StyledTableRow>
-
-                          <StyledTableRow>
-                            {opKWhState && (
-                              <>
-                                <StyledTableCell component="th" scope="row">
-                                  Energy Meter
+                                  Rated Input Voltage
                                 </StyledTableCell>
 
                                 <StyledTableCell>
-                                  {opKWhState} KWh
+                                  {spec_InVolt} VAC
                                 </StyledTableCell>
+                              </>
+                            )}
+                          </StyledTableRow>
+
+                          <StyledTableRow>
+                            {spec_OutVA && (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                  Rated Output Power
+                                </StyledTableCell>
+
+                                <StyledTableCell>
+                                  {spec_OutVA} VA
+                                </StyledTableCell>
+                              </>
+                            )}
+                          </StyledTableRow>
+
+                          <StyledTableRow>
+                            {spec_BatVolt && (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                  Rated Battery Voltage
+                                </StyledTableCell>
+
+                                <StyledTableCell>
+                                  {spec_BatVolt} VDC
+                                </StyledTableCell>
+                              </>
+                            )}
+                          </StyledTableRow>
+
+                          <StyledTableRow>
+                            {spec_ChCur && (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                  Charger Current
+                                </StyledTableCell>
+
+                                <StyledTableCell>
+                                  {spec_ChCur} A
+                                </StyledTableCell>
+                              </>
+                            )}
+                          </StyledTableRow>
+
+                          <StyledTableRow>
+                            {spec_ChComp && (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                  Temperature Compensation
+                                </StyledTableCell>
+
+                                <StyledTableCell>
+                                  {spec_ChComp} mV/Cell/°C
+                                </StyledTableCell>
+                              </>
+                            )}
+                          </StyledTableRow>
+
+                          <StyledTableRow>
+                            {spec_MCUv && (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                  FXM Firmware SW Version
+                                </StyledTableCell>
+
+                                <StyledTableCell>{spec_MCUv}</StyledTableCell>
+                              </>
+                            )}
+                          </StyledTableRow>
+
+                          <StyledTableRow>
+                            {spec_RMUv && (
+                              <>
+                                <StyledTableCell component="th" scope="row">
+                                  Com Module SW Version
+                                </StyledTableCell>
+
+                                <StyledTableCell>{spec_RMUv}</StyledTableCell>
                               </>
                             )}
                           </StyledTableRow>
@@ -431,9 +399,9 @@ export default function InputOutput(props) {
                     )}
                   </Table>
                 </TableContainer>
-                <Typography component="div"></Typography>
               </>
             )}
+            <Typography component="div"></Typography>
           </Container>
         </React.Fragment>
       </div>
