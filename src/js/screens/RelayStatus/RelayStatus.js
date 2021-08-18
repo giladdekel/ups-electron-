@@ -190,10 +190,8 @@ export default function BatteryInverter(props) {
                         <StyledTableCell>
                           Relay Programmable Status
                         </StyledTableCell>
-                        <StyledTableCell>
-                        </StyledTableCell>
-                        <StyledTableCell>
-                        </StyledTableCell>
+                        <StyledTableCell></StyledTableCell>
+                        <StyledTableCell></StyledTableCell>
                       </TableRow>
                     </TableHead>
                     {rs0 ||
@@ -211,7 +209,6 @@ export default function BatteryInverter(props) {
                       <>
                         {" "}
                         <TableBody>
-
                           <StyledTableRow>
                             {rs0 && ra0 && (
                               <>
@@ -306,7 +303,6 @@ export default function BatteryInverter(props) {
                   </Table>
                 </TableContainer>
                 <br />
-
                 <TableContainer component={Paper}>
                   <Table
                     className={classes.table}
@@ -315,73 +311,73 @@ export default function BatteryInverter(props) {
                     <TableHead>
                       <TableRow>
                         <StyledTableCell>
-                        Load Shed Timer Status
+                          Load Shed Timer Status
                         </StyledTableCell>
-                        <StyledTableCell>
-                        </StyledTableCell>
-                 
+                        <StyledTableCell></StyledTableCell>
                       </TableRow>
                     </TableHead>
-                    {tmr1 ||
-                    tmr2 ||
-                    tmr3 ? (
+                    {tmr1 || tmr2 || tmr3 ? (
                       <>
                         {" "}
                         <TableBody>
+                          <StyledTableRow>
+                            <>
+                              <StyledTableCell
+                                component="th"
+                                scope="row"
+                              ></StyledTableCell>
 
-
-                        <StyledTableRow>
-                           
-                              <>
-                                <StyledTableCell component="th" scope="row">
-                                
-                                </StyledTableCell>
-
-                                <StyledTableCell>Time Remaining</StyledTableCell>
-
-                              </>
-                           
+                              <StyledTableCell>Time Remaining</StyledTableCell>
+                            </>
                           </StyledTableRow>
 
                           <StyledTableRow>
-                            {tmr1 &&  (
+                            {tmr1 && (
                               <>
                                 <StyledTableCell component="th" scope="row">
-                                Timer 1	
+                                  Timer 1
                                 </StyledTableCell>
 
-                                <StyledTableCell>{Math.floor(tmr1 / 3600)}hr {Math.floor(tmr1 % 3600 / 60)}min {Math.floor(tmr1 % 3600 % 60)}sec</StyledTableCell>
-
+                                <StyledTableCell>
+                                  {Math.floor(tmr1 / 3600)}hr{" "}
+                                  {Math.floor((tmr1 % 3600) / 60)}min{" "}
+                                  {Math.floor((tmr1 % 3600) % 60)}sec
+                                </StyledTableCell>
                               </>
                             )}
                           </StyledTableRow>
 
                           <StyledTableRow>
-                            {tmr2  && (
+                            {tmr2 && (
                               <>
                                 <StyledTableCell component="th" scope="row">
-                                Timer 2	
+                                  Timer 2
                                 </StyledTableCell>
 
-                                <StyledTableCell>{Math.floor(tmr2 / 3600)}hr {Math.floor(tmr2 % 3600 / 60)}min {Math.floor(tmr2 % 3600 % 60)}sec</StyledTableCell>
-
+                                <StyledTableCell>
+                                  {Math.floor(tmr2 / 3600)}hr{" "}
+                                  {Math.floor((tmr2 % 3600) / 60)}min{" "}
+                                  {Math.floor((tmr2 % 3600) % 60)}sec
+                                </StyledTableCell>
                               </>
                             )}
                           </StyledTableRow>
 
                           <StyledTableRow>
-                            {tmr3 &&  (
+                            {tmr3 && (
                               <>
                                 <StyledTableCell component="th" scope="row">
-                                Timer 3	
+                                  Timer 3
                                 </StyledTableCell>
 
-                                <StyledTableCell>{Math.floor(tmr3 / 3600)}hr {Math.floor(tmr3 % 3600 / 60)}min {Math.floor(tmr3 % 3600 % 60)}sec</StyledTableCell>
-
+                                <StyledTableCell>
+                                  {Math.floor(tmr3 / 3600)}hr{" "}
+                                  {Math.floor((tmr3 % 3600) / 60)}min{" "}
+                                  {Math.floor((tmr3 % 3600) % 60)}sec
+                                </StyledTableCell>
                               </>
                             )}
                           </StyledTableRow>
-
                         </TableBody>
                       </>
                     ) : (
@@ -393,10 +389,6 @@ export default function BatteryInverter(props) {
                   </Table>
                 </TableContainer>
                 <br />
-         
-
-
-
                 <TableContainer component={Paper}>
                   <Table
                     className={classes.table}
@@ -405,36 +397,34 @@ export default function BatteryInverter(props) {
                     <TableHead>
                       <TableRow>
                         <StyledTableCell>
-                        Time Of Day Action Status
+                          Time Of Day Action Status
                         </StyledTableCell>
-                        <StyledTableCell>
-                        </StyledTableCell>
-                        <StyledTableCell>
-                        </StyledTableCell>
+                        <StyledTableCell></StyledTableCell>
+                        <StyledTableCell></StyledTableCell>
                       </TableRow>
                     </TableHead>
-                    {rDTAState1Status ||
-                    rDTAState2Status 
-          ? (
+                    {rDTAState1Status || rDTAState2Status ? (
                       <>
                         {" "}
                         <TableBody>
-
                           <StyledTableRow>
                             {rDTAState1Status && rDTAState2Status && (
                               <>
                                 <StyledTableCell component="th" scope="row">
-                                Action Enabled	
+                                  Action Enabled
                                 </StyledTableCell>
 
-                                <StyledTableCell>{rDTAState1Status}</StyledTableCell>
+                                <StyledTableCell>
+                                  {rDTAState1Status}
+                                </StyledTableCell>
 
-                                <StyledTableCell>{rDTAState2Status}</StyledTableCell>
+                                <StyledTableCell>
+                                  {rDTAState2Status}
+                                </StyledTableCell>
                               </>
                             )}
                           </StyledTableRow>
-
-                      </TableBody>
+                        </TableBody>
                       </>
                     ) : (
                       <>
@@ -445,7 +435,6 @@ export default function BatteryInverter(props) {
                   </Table>
                 </TableContainer>
                 <br />
-         
               </>
             )}
             <Typography component="div"></Typography>

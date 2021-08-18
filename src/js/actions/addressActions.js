@@ -3,6 +3,23 @@ import {
   ADDRESS_DETAILS_FAIL,
   ADDRESS_DETAILS_REQUEST,
   ADDRESS_DETAILS_SUCCESS,
+
+  ADDRESS_NAME_FAIL,
+  ADDRESS_NAME_REQUEST,
+  ADDRESS_NAME_SUCCESS,
+
+
+
+  ADDRESS_IP_FAIL,
+  ADDRESS_IP_REQUEST,
+  ADDRESS_IP_SUCCESS,
+
+
+
+
+
+
+
   ADDRESS_CREATE_FAIL,
   ADDRESS_CREATE_REQUEST,
   ADDRESS_CREATE_SUCCESS,
@@ -111,6 +128,9 @@ export const listAddresses = () => async (dispatch, getState) => {
 
 
 
+
+
+
 export const deleteAddress = (addressId) => async (dispatch) => {
   dispatch({ type: ADDRESS_DELETE_REQUEST, payload: addressId });
 
@@ -130,6 +150,8 @@ export const deleteAddress = (addressId) => async (dispatch) => {
 
 
 
+
+
 export const detailsAddress = (addressId) => async (dispatch) => {
   dispatch({ type: ADDRESS_DETAILS_REQUEST, payload: addressId });
   
@@ -144,6 +166,50 @@ export const detailsAddress = (addressId) => async (dispatch) => {
     dispatch({ type: ADDRESS_DETAILS_FAIL, payload: message });
   }
 };
+
+
+export const nameAddress = (name) => async (dispatch) => {
+  // console.log('nameaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:', name)
+  dispatch({ type: ADDRESS_NAME_REQUEST, payload: name });
+  
+  try {
+    const { data } = await Axios.get(`http://localhost:5000/api/addresses/name/${name}`);
+    dispatch({ type: ADDRESS_NAME_SUCCESS, payload: data });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    dispatch({ type: ADDRESS_NAME_FAIL, payload: message });
+  }
+};
+
+
+
+
+
+
+
+
+export const ipAddress = (ip) => async (dispatch) => {
+  console.log('ipaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:', ip)
+  dispatch({ type: ADDRESS_IP_REQUEST, payload: ip });
+  
+  try {
+    const { data } = await Axios.get(`http://localhost:5000/api/addresses/ip/${ip}`);
+    dispatch({ type: ADDRESS_IP_SUCCESS, payload: data });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    dispatch({ type: ADDRESS_IP_FAIL, payload: message });
+  }
+};
+
+
+
+
 
 
 

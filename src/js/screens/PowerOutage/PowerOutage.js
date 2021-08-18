@@ -52,23 +52,19 @@ const useStyles = makeStyles({
 });
 
 export default function PowerOutage(props) {
-  const [modeState, setModeState] = useState(false);
-  const [batVoltState, setBatVoltState] = useState(false);
-  const [batCCurState, setBatCCurState] = useState(false);
+  const [startTime, setStartTime] = useState([]);
 
-  const [batRRemState, setBatRRemState] = useState(false);
-  const [batTempState, setBatTempState] = useState(false);
-  const [peukertNumberState, setPeukertNumberState] = useState(false);
+  const [endTime, setEndTime] = useState([]);
 
-  const [peukertCapacityState, setPeukertCapacityState] = useState(false);
-  const [batteryOpenVoltageState, setBatteryOpenVoltageState] = useState(false);
-  const [invOccState, setInvOccState] = useState(false);
+  const [duration, setDuration] = useState([]);
 
-  const [invAccState, setInvAccState] = useState(false);
+  const [batteryUse, setBatteryUse] = useState([]);
+
+  const [dataRows, setDataRows] = useState([]);
 
   const [error, setError] = useState(false);
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const ip = props.match.params.id;
   // console.log("ip:", ip);
   // const ip = "192.168.0.90";
@@ -79,7 +75,7 @@ export default function PowerOutage(props) {
 
       try {
         axios
-          .get(`http://${ip}/xml/get_live_status.xml?battery_inverter`)
+          .get(`http://${ip}/xml/get_power_outage_status.xml`)
           .then(function (response) {
             //   console.log("response: ", response); // this will print xml data structure
 
@@ -87,41 +83,53 @@ export default function PowerOutage(props) {
               compact: true,
               spaces: 2,
             });
-            // console.log("data:", data);
+
+            console.log("data:", data.data.form.table.row);
+
+            let rows = data.data.form.table.row;
+
+            setDataRows(rows);
+
+            // rows.map((row) => {
+            //   console.log(row.field);
+            //   console.log(
+            //     (row.field[0].countdown &&
+            //       row.field[0].countdown._attributes.value) ||
+            //       (row.field[0]._text && row.field[0]._text)
+            //   );
+
+            //   console.log(
+            //     (row.field[1].countdown &&
+            //       row.field[1].countdown._attributes.value) ||
+            //       (row.field[1]._text && row.field[1]._text)
+            //   );
+            //   console.log(
+            //     (row.field[2].countdown &&
+            //       row.field[2].countdown._attributes.value) ||
+            //       (row.field[2]._text && row.field[2]._text)
+            //   );
+
+            //   console.log(
+            //     (row.field[3].countdown &&
+            //       row.field[3].countdown._attributes.value) ||
+            //       (row.field[3]._text && row.field[3]._text)
+            //   );
+            // });
+
+            // console.log("data:", data.data.form.table.row[0].field[0]._text);
+            // console.log("data:", data.data.form.table.row[0].field[1]._text);
+            // console.log(
+            //   "data:",
+            //   data.data.form.table.row[0].field[2].countdown._attributes.value
+            // );
+            // console.log(
+            //   "data:",
+            //   data.data.form.table.row[0].field[3].countdown._attributes.value
+            // );
 
             /// table input
 
             setError(false);
-
-            setModeState(data.data.translate[0].text._text);
-
-            setBatVoltState(
-              data.data.translate[1].text.qualval._attributes.value
-            );
-
-            setBatCCurState(
-              data.data.translate[2].text.qualval._attributes.value
-            );
-
-            setBatRRemState(
-              data.data.translate[2].text.qualval._attributes.value
-            );
-            // console.log('lineStatusState:', lineStatusState)
-
-            setBatTempState(
-              data.data.translate[4].text.qualval._attributes.value
-            );
-            setPeukertNumberState(data.data.translate[5].text._text);
-
-            setPeukertCapacityState(data.data.translate[6].text._text);
-
-            setBatteryOpenVoltageState(data.data.translate[7].text._text);
-            setInvOccState(
-              data.data.translate[8].text.qualval._attributes.value
-            );
-            setInvAccState(
-              data.data.translate[9].text.countdown._attributes.value
-            );
 
             setLoading(false);
           })
@@ -140,80 +148,6 @@ export default function PowerOutage(props) {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-
-  // useEffect(() => {
-  //   if (!socket) {
-  //     // console.log("useEffect in Room Screen :");
-
-  //     const sk = socketIOClient(ENDPOINT);
-
-  //     setSocket(sk);
-
-  //     sk.emit(`BatteryInverter`, ip);
-  //     console.log(" sk.emit(`BatteryInverter`, ip);");
-
-  //     sk.on("modeState", (data) => {
-  //       if (data) {
-  //         setModeState(data);
-  //       }
-  //     });
-  //     sk.on("batVoltState", (data) => {
-  //       if (data) {
-  //         setBatVoltState(data);
-  //       }
-  //     });
-
-  //     sk.on("batCCurState", (data) => {
-  //       if (data) {
-  //         setBatCCurState(data);
-  //       }
-  //     });
-
-  //     sk.on("batRRemState", (data) => {
-  //       if (data) {
-  //         console.log("opVal:", data);
-
-  //         setBatRRemState(data);
-  //       }
-  //     });
-
-  //     sk.on("batTempState", (data) => {
-  //       if (data) {
-  //         setBatTempState(data);
-  //       }
-  //     });
-
-  //     sk.on("peukertNumberState", (data) => {
-  //       if (data) {
-  //         setPeukertNumberState(data);
-  //       }
-  //     });
-
-  //     sk.on("peukertCapacityState", (data) => {
-  //       if (data) {
-  //         setPeukertCapacityState(data);
-  //       }
-  //     });
-
-  //     sk.on("batteryOpenVoltageState", (data) => {
-  //       if (data) {
-  //         setBatteryOpenVoltageState(data);
-  //       }
-  //     });
-
-  //     sk.on("invOccState", (data) => {
-  //       if (data) {
-  //         setInvOccState(data);
-  //       }
-  //     });
-
-  //     sk.on("invAccState", (data) => {
-  //       if (data) {
-  //         setInvAccState(data);
-  //       }
-  //     });
-  //   }
-  // }, [socket]);
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -242,11 +176,11 @@ export default function PowerOutage(props) {
           {" "}
           <CssBaseline />
           <Container maxWidth="sm">
-            <h1 className="rainbow-text"> UPS {ip} - Battery & Inverter </h1>{" "}
+            <h1 className="rainbow-text"> UPS {ip} - Power Outage </h1>{" "}
             {error ? (
-
-              <Alert severity="error">Error- cheack if the UPS is connected</Alert>
-
+              <Alert severity="error">
+                Error- cheack if the UPS is connected
+              </Alert>
             ) : (
               <>
                 {" "}
@@ -257,120 +191,114 @@ export default function PowerOutage(props) {
                   >
                     <TableHead>
                       <TableRow>
-                        <StyledTableCell>Output Parameterss</StyledTableCell>
+                        <StyledTableCell>Power Outage History</StyledTableCell>
+                        <StyledTableCell></StyledTableCell>
+                        <StyledTableCell></StyledTableCell>
                         <StyledTableCell></StyledTableCell>
                       </TableRow>
                     </TableHead>
-                    {modeState ||
-                    batVoltState ||
-                    batCCurState ||
-                    batRRemState ||
-                    batTempState ||
-                    peukertNumberState ||
-                    peukertCapacityState ||
-                    batteryOpenVoltageState ? (
+                    {dataRows.length > 0 ? (
                       <>
                         {" "}
                         <TableBody>
-                          <TableRow>24 VDC</TableRow>
-
                           <StyledTableRow>
-                            {batVoltState && (
-                              <>
-                                <StyledTableCell component="th" scope="row">
-                                  Battery Voltage
+                            <StyledTableCell>Start Time </StyledTableCell>
+                            <StyledTableCell>End Time </StyledTableCell>
+                            <StyledTableCell>Duration</StyledTableCell>
+                            <StyledTableCell>Battery Use</StyledTableCell>
+                          </StyledTableRow>
+
+                          {/* data: 
+(5) [{…}, {…}, {…}, {…}, {…}]
+
+0: {field: Array(4)}
+1: {field: Array(4)}
+2: {field: Array(4)}
+3: {field: Array(4)}
+4: {field: Array(4)} */}
+                          {/* {dataRows.map(dataRow=>  )} */}
+
+                          {dataRows.map(
+                            (row) => (
+                              <StyledTableRow>
+                                <StyledTableCell>
+                                  {(row.field[0]._text && row.field[0]._text) ||
+                                    (row.field[0].countdown &&
+                                      row.field[0].countdown._attributes.value)}
+                                </StyledTableCell>
+                                <StyledTableCell>
+                                  {(row.field[1]._text && row.field[1]._text) ||
+                                    (row.field[1].countdown &&
+                                      row.field[1].countdown._attributes.value)}
                                 </StyledTableCell>
 
                                 <StyledTableCell>
-                                  {batVoltState} VDC
-                                </StyledTableCell>
-                              </>
-                            )}
-                          </StyledTableRow>
-
-                          <StyledTableRow>
-                            {batCCurState && (
-                              <>
-                                <StyledTableCell component="th" scope="row">
-                                  Charging Current
-                                </StyledTableCell>
-
-                                <StyledTableCell>
-                                  {batCCurState} A
-                                </StyledTableCell>
-                              </>
-                            )}
-                          </StyledTableRow>
-
-                          <StyledTableRow>
-                            {batRRemState && (
-                              <>
-                                <StyledTableCell component="th" scope="row">
-                                  Runtime Remaining
+                              
+                                  {Math.floor(
+                                    (Number(
+                                      row.field[2].countdown &&
+                                        row.field[2].countdown._attributes.value
+                                    ) || 0) / 3600
+                                  )}
+                                  hr{" "}
+                                  {Math.floor(
+                                    (Number(
+                                      row.field[2].countdown &&
+                                        row.field[2].countdown._attributes.value
+                                    ) || 0)% 3600/60) }
+                                  min{" "}
+                                  {Math.floor(
+                                    ((Number(
+                                      row.field[2].countdown &&
+                                        row.field[2].countdown._attributes.value
+                                    ) || 0) % 3600 ) % 60)}
+                                   sec
                                 </StyledTableCell>
 
                                 <StyledTableCell>
-                                  {batRRemState} °C
+                             
+                                  {Math.floor(
+                                    (Number(
+                                      row.field[3].countdown &&
+                                        row.field[3].countdown._attributes.value
+                                    ) || 0) / 3600
+                                  )}
+                                   hr
+                                   {" "}
+                                  {Math.floor(
+                                    (Number(
+                                      row.field[3].countdown &&
+                                        row.field[3].countdown._attributes.value
+                                    ) || 0)% 3600/60) }
+                                   min
+                                   {" "}
+                                  {Math.floor(
+                                    ((Number(
+                                      row.field[3].countdown &&
+                                        row.field[3].countdown._attributes.value
+                                    ) || 0) % 3600 ) % 60)}
+                                   sec
                                 </StyledTableCell>
-                              </>
-                            )}
-                          </StyledTableRow>
+                              </StyledTableRow>
+                            )
 
-                          <StyledTableRow>
-                            {batTempState && (
-                              <>
-                                <StyledTableCell component="th" scope="row">
-                                  External Temperature
-                                </StyledTableCell>
+                            // console.log(
+                            //   (row.field[1].countdown &&
+                            //     row.field[1].countdown._attributes.value) ||
+                            //     (row.field[1]._text && row.field[1]._text)
+                            // );
+                            // console.log(
+                            //   (row.field[2].countdown &&
+                            //     row.field[2].countdown._attributes.value) ||
+                            //     (row.field[2]._text && row.field[2]._text)
+                            // );
 
-                                <StyledTableCell>
-                                  {batTempState} °C
-                                </StyledTableCell>
-                              </>
-                            )}
-                          </StyledTableRow>
-
-                          <StyledTableRow>
-                            {peukertNumberState && (
-                              <>
-                                <StyledTableCell component="th" scope="row">
-                                  Peukert Number
-                                </StyledTableCell>
-
-                                <StyledTableCell>
-                                  {peukertNumberState} Ah
-                                </StyledTableCell>
-                              </>
-                            )}
-                          </StyledTableRow>
-
-                          <StyledTableRow>
-                            {peukertCapacityState && (
-                              <>
-                                <StyledTableCell component="th" scope="row">
-                                  Capacity
-                                </StyledTableCell>
-
-                                <StyledTableCell>
-                                  {peukertCapacityState} Ah
-                                </StyledTableCell>
-                              </>
-                            )}
-                          </StyledTableRow>
-
-                          <StyledTableRow>
-                            {batteryOpenVoltageState && (
-                              <>
-                                <StyledTableCell component="th" scope="row">
-                                  Battery Open-Circuit Voltage
-                                </StyledTableCell>
-
-                                <StyledTableCell>
-                                  {batteryOpenVoltageState} VDC
-                                </StyledTableCell>
-                              </>
-                            )}
-                          </StyledTableRow>
+                            // console.log(
+                            //   (row.field[3].countdown &&
+                            //     row.field[3].countdown._attributes.value) ||
+                            //     (row.field[3]._text && row.field[3]._text)
+                            // );
+                          )}
                         </TableBody>
                       </>
                     ) : (
@@ -379,59 +307,6 @@ export default function PowerOutage(props) {
                         <CircularProgress />
                       </>
                     )}
-                  </Table>
-                </TableContainer>
-                <br />
-                <TableContainer component={Paper}>
-                  <Table
-                    className={classes.table}
-                    aria-label="customized table"
-                  >
-                    <TableHead>
-                      <TableRow>
-                        <StyledTableCell>Battery Parameters</StyledTableCell>
-                        <StyledTableCell></StyledTableCell>
-                      </TableRow>
-                    </TableHead>
-                    {invOccState || invAccState ? (
-                      <>
-                        <TableBody>
-                          <TableRow></TableRow>
-                          <TableRow>Inverter Parameters</TableRow>
-
-                          <StyledTableRow>
-                            {invOccState && (
-                              <>
-                                <StyledTableCell component="th" scope="row">
-                                  Accumulated Line Failures
-                                </StyledTableCell>
-
-                                <StyledTableCell>
-                                  {invOccState} Time
-                                </StyledTableCell>
-                              </>
-                            )}
-                          </StyledTableRow>
-
-                          <StyledTableRow>
-                            {invAccState && (
-                              <>
-                                <StyledTableCell component="th" scope="row">
-                                  Accumulated Backup Time
-                                </StyledTableCell>
-
-                                <StyledTableCell>{invAccState}</StyledTableCell>
-                              </>
-                            )}
-                          </StyledTableRow>
-                        </TableBody>
-                      </>
-                    ) : (
-                      <>
-                        {" "}
-                        <CircularProgress />
-                      </>
-                    )}{" "}
                   </Table>
                 </TableContainer>
               </>

@@ -1,6 +1,7 @@
 // import logo from './logo.svg';
-// import './App.css';
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
+
+import "./App.scss";
 
 import { HashRouter, Link, Route, Switch } from "react-router-dom";
 
@@ -13,19 +14,15 @@ import InputOutput from "./screens/InputOutput/InputOutput";
 import ResponsiveDrawer from "./components/ResponsiveDrawer/ResponsiveDrawer";
 import Alerts from "./components/Alerts/Alerts";
 
-
 import BatteryInverter from "./screens/BatteryInverter/BatteryInverter";
 
 import RelayStatus from "./screens/RelayStatus/RelayStatus";
-
 
 import UPSSpecification from "./screens/UPSSpecification/UPSSpecification";
 
 import UserInput from "./screens/UserInput/UserInput";
 
 import PowerOutage from "./screens/PowerOutage/PowerOutage";
-
-
 
 import AddressListScreen from "./screens/AddressListScreen/AddressListScreen";
 
@@ -38,7 +35,6 @@ import AddressAddScreen from "./screens/AddressAddScreen/AddressAddScreen";
 import AddressInfoScreen from "./screens/AddressInfoScreen/AddressInfoScreen";
 import { listAddresses } from "./actions/addressActions";
 
-
 // import NotFoundPage from "./screens/notfound/notfound.component";
 
 // import RegisterScreen from "./screens/RegisterScreen/RegisterScreen";
@@ -50,10 +46,10 @@ import { listAddresses } from "./actions/addressActions";
 
 import { useDispatch, useSelector } from "react-redux";
 import { ADDRESS_DETAILS_RESET } from "./constants/addressConstants";
-
+import SearchBar from "./components/SearchBar/SearchBar";
+import Container  from '@material-ui/core/Container';
 
 function App() {
-
   const addressList = useSelector((state) => state.addressList);
   const { loading, error, addresses } = addressList;
   console.log(" const addressList = useSelector((state):", addresses);
@@ -89,6 +85,14 @@ function App() {
         <div className="grid-container">
           <ResponsiveDrawer />
 
+            <Container maxWidth="sm">
+              {" "}
+              <Route
+                render={({ history }) => (
+                  <SearchBar history={history}></SearchBar>
+                )}
+              ></Route>
+            </Container>
           {/* <Alerts /> */}
 
           <Switch>
@@ -108,7 +112,10 @@ function App() {
 
             <Route path="/address/add" component={AddressAddScreen}></Route>
 
-            <Route path="/address/info/:id" component={AddressInfoScreen}></Route>
+            <Route
+              path="/address/info/:id"
+              component={AddressInfoScreen}
+            ></Route>
 
             <Route path="/inputoutput/:id" component={InputOutput}></Route>
 
@@ -119,14 +126,14 @@ function App() {
 
             <Route path="/RelayStatus/:id" component={RelayStatus}></Route>
 
-
-            <Route path="/UPSSpecification/:id" component={UPSSpecification}></Route>
+            <Route
+              path="/UPSSpecification/:id"
+              component={UPSSpecification}
+            ></Route>
 
             <Route path="/UserInput/:id" component={UserInput}></Route>
 
-
             <Route path="/PowerOutage/:id" component={PowerOutage}></Route>
-
 
             {/* <Route path="/signin" component={SigninScreen}></Route>
 

@@ -103,7 +103,7 @@ export default function UPSSpecification(props) {
               compact: true,
               spaces: 2,
             });
-            console.log("data:", data);
+            // console.log("data:", data);
 
             setMode(data.data.newval[0]._text);
             setSpec_CName(data.data.newval[1]._text);

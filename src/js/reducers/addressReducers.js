@@ -4,9 +4,32 @@ import {
   ADDRESS_DELETE_RESET,
   ADDRESS_DELETE_SUCCESS,
   ADDRESS_DETAILS_FAIL,
+
   ADDRESS_DETAILS_REQUEST,
   ADDRESS_DETAILS_RESET,
   ADDRESS_DETAILS_SUCCESS,
+
+
+
+
+  ADDRESS_NAME_FAIL,
+  ADDRESS_NAME_REQUEST,
+  ADDRESS_NAME_RESET,
+  ADDRESS_NAME_SUCCESS,
+
+
+
+  ADDRESS_IP_FAIL,
+  ADDRESS_IP_REQUEST,
+  ADDRESS_IP_RESET,
+  ADDRESS_IP_SUCCESS,
+
+
+
+
+
+
+
   ADDRESS_LIST_FAIL,
   ADDRESS_LIST_REQUEST,
   ADDRESS_LIST_SUCCESS,
@@ -76,6 +99,50 @@ export const addressDetailsReducer = (state = { loading: true }, action) => {
       return state;
   }
 };
+
+
+
+
+
+
+export const addressNameReducer = (state = { loading: true }, action) => {
+  switch (action.type) {
+    case ADDRESS_NAME_REQUEST:
+      return { loading: true };
+    case ADDRESS_NAME_SUCCESS:
+      return { loading: false, address: action.payload };
+    case ADDRESS_NAME_FAIL:
+      return { loading: false, error: true };
+    case ADDRESS_NAME_RESET:
+      return { };
+    default:
+      return state;
+  }
+};
+
+
+
+export const addressIpReducer = (state = { loading: true }, action) => {
+  switch (action.type) {
+    case ADDRESS_IP_REQUEST:
+      return { loading: true };
+    case ADDRESS_IP_SUCCESS:
+      return { loading: false, address: action.payload };
+    case ADDRESS_IP_FAIL:
+      return { loading: false, error: true };
+    case ADDRESS_IP_RESET:
+      return { address: false};
+    default:
+      return state;
+  }
+};
+
+
+
+
+
+
+
 
 export const addressUpdateReducer = (state = {}, action) => {
   switch (action.type) {

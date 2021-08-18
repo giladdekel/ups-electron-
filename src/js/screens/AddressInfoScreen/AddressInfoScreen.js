@@ -12,9 +12,32 @@ import axios from "axios";
 import convert from "xml-js";
 
 import { useDispatch, useSelector } from "react-redux";
-import { deleteAddress, listAddresses } from "./../../actions/addressActions";
-import { ADDRESS_DETAILS_RESET } from "./../../constants/addressConstants";
+import {
+  deleteAddress,
+  ipAddress,
+  listAddresses,
+} from "./../../actions/addressActions";
+import {
+  ADDRESS_DETAILS_RESET,
+  ADDRESS_IP_RESET,
+} from "./../../constants/addressConstants";
 import Alert from "@material-ui/lab/Alert";
+
+import InfoIcon from "@material-ui/icons/Info";
+import SettingsInputComponentIcon from "@material-ui/icons/SettingsInputComponent";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+
+import AssignmentIcon from "@material-ui/icons/Assignment";
+
+import Battery90Icon from "@material-ui/icons/Battery90";
+
+import PowerIcon from "@material-ui/icons/Power";
+
+// import IconButton from '@material-ui/core/IconButton';
+
+import Button from "@material-ui/core/Button";
+
+import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 
 const useStyles = makeStyles({
   root: {
@@ -33,8 +56,17 @@ export default function AddressInfoScreen(props) {
 
   const addressList = useSelector((state) => state.addressList);
   const { loading, error, addresses } = addressList;
-  // console.log("addresses:", addresses);
-  let makeAction = true;
+
+  const addressIp = useSelector((state) => state.addressIp);
+  const {
+    loading: loadingAddressIp,
+    error: errorAddressIp,
+    address,
+  } = addressIp;
+  console.log(
+    "address==============================================================================:",
+    address
+  );
 
   const addressDelete = useSelector((state) => state.addressDelete);
   const {
@@ -51,22 +83,23 @@ export default function AddressInfoScreen(props) {
   // }, [])
 
   useEffect(() => {
+    return () => {
+      dispatch({
+        type: ADDRESS_IP_RESET,
+      });
+    };
+  }, []);
+
+  useEffect(() => {
     dispatch(listAddresses());
     dispatch({
       type: ADDRESS_DETAILS_RESET,
     });
-  }, [dispatch, successDelete]);
 
-  const deleteHandler = (address) => {
-    console.log("address:", address);
-    if (window.confirm("Are you sure?")) {
-      dispatch(deleteAddress(address._id));
+    if (!address) {
+      dispatch(ipAddress(ip));
     }
-  };
-
-  const [objFaults, setObjFaults] = useState({});
-
-  const [dataAlert, setDataAlert] = useState(false);
+  }, [dispatch, successDelete, address]);
 
   const [alerts, setAlerts] = useState();
 
@@ -318,6 +351,56 @@ export default function AddressInfoScreen(props) {
     return () => clearInterval(interval);
   }, []);
 
+  /////////////////////////handle Click/////////////////////////////////////////////////
+
+  function handleClickOn() {
+    console.log("handleClickOn:");
+
+    axios
+      .post(
+        `http://${ip}/X_CSE.xml`,
+        "Novus?me=setUnitConfig&=&=&Unit_Name=&AC_Output_SD=1&DC_Output_SD=0&Bypass_Mode=0&Temperature_Mode=0&Power_Quality=0&PQ_AVR_THRESHOLD=1&Sense_Type=0&Auto_Cfg_Freq=1&Rated_Frequency=50&Rated_Input_Volt=230&Line_Q_Time=3&Refresh_Time=1",
+        {
+          auth: {
+            username: "",
+            password: "1111",
+          },
+        }
+      )
+      .then(function (response) {
+        console.log("responseeeeeeeeeeeeeeeeeeeeee: ", response); // this will print xml data structure
+        const data = convert.xml2js(response.data, {
+          compact: true,
+          spaces: 2,
+        });
+        console.log("data:", data);
+      });
+  }
+
+  function handleClickOff() {
+    console.log("handleClickOff:");
+
+    axios
+      .post(
+        `http://${ip}/X_CSE.xml`,
+        "Novus?me=setUnitConfig&=&=&Unit_Name=&DC_Output_SD=0&Bypass_Mode=0&Temperature_Mode=0&Power_Quality=0&PQ_AVR_THRESHOLD=1&Sense_Type=0&Auto_Cfg_Freq=1&Rated_Frequency=50&Rated_Input_Volt=230&Line_Q_Time=3&Refresh_Time=1",
+        {
+          auth: {
+            username: "",
+            password: "1111",
+          },
+        }
+      )
+      .then(function (response) {
+        console.log("responseeeeeeeeeeeeeeeeeeeeee: ", response); // this will print xml data structure
+        const data = convert.xml2js(response.data, {
+          compact: true,
+          spaces: 2,
+        });
+        console.log("data:", data);
+      });
+  }
+
   ////////////////////////alerts end//////////////////////////////////////
 
   return (
@@ -349,25 +432,6 @@ export default function AddressInfoScreen(props) {
                 </Alert>
               )
           )}
-      {/* {addresses && console.log("assssssddresses: ", addresses)} */}
-      {/* {alerts &&
-              console.log("Object.entries(alerts): ", Object.entries(alerts))} */}
-
-      {/* {alerts && console.log("alerts------: ", alerts)} */}
-
-      {/* // {addresses.filter(a=>a.name)   map(address=> )} */}
-      {/* {faults &&
-              Object.entries(faults)
-                .sort(([key1], [key2]) => Number(key1 > key2) - 0.5)
-                .map(
-                  ([keyName], index) =>
-                    faults[keyName] === -1 && (
-                      <Alert key={index} severity="error">
-                        {" "}
-                        <b>{keyName}</b> is off
-                      </Alert>
-                    )
-                )} */}
 
       {upsError &&
         upsError.map((ups) => (
@@ -376,7 +440,11 @@ export default function AddressInfoScreen(props) {
           </Alert>
         ))}
 
-      <h1>UPS {ip}</h1>
+      {address && (
+        <h2>
+          {address.name} - {ip}{" "}
+        </h2>
+      )}
 
       <BottomNavigation
         value={value}
@@ -391,44 +459,62 @@ export default function AddressInfoScreen(props) {
             props.history.push(`/UPSSpecification/${ip}`);
           }}
           label="UPS Specification"
-          icon={<RestoreIcon />}
+          icon={<InfoIcon />}
         />
         <BottomNavigationAction
           onClick={() => {
             props.history.push(`/inputOutput/${ip}`);
           }}
           label="Input & Output"
-          icon={<RestoreIcon />}
+          icon={<SettingsInputComponentIcon />}
         />
         <BottomNavigationAction
           onClick={() => {
             props.history.push(`/BatteryInverter/${ip}`);
           }}
           label="Battery & Inverter"
-          icon={<RestoreIcon />}
+          icon={<Battery90Icon />}
         />{" "}
         <BottomNavigationAction
           onClick={() => {
             props.history.push(`/RelayStatus/${ip}`);
           }}
           label="Relay & Load Shed"
-          icon={<RestoreIcon />}
+          icon={<AssignmentIcon />}
         />
         <BottomNavigationAction
           onClick={() => {
             props.history.push(`/UserInput/${ip}`);
           }}
           label="User Input"
-          icon={<RestoreIcon />}
+          icon={<AccountCircleIcon />}
         />
         <BottomNavigationAction
           onClick={() => {
             props.history.push(`/PowerOutage/${ip}`);
           }}
           label="Power Outage"
-          icon={<RestoreIcon />}
+          icon={<PowerIcon />}
         />
       </BottomNavigation>
+
+      {/* <button onClick={handleClickOn}> On </button> */}
+
+      {/* <IconButton onClick={handleClickOn} color="secondary" aria-label="add an alarm">
+        <PowerSettingsNewIcon />
+      </IconButton> */}
+
+      <Button
+        onClick={handleClickOn}
+        variant="contained"
+        color="secondary"
+        className={classes.button}
+        startIcon={<PowerSettingsNewIcon />}
+      >
+        Off
+      </Button>
+
+      {/* <button onClick={handleClickOff}> Off </button> */}
     </Container>
   );
 }

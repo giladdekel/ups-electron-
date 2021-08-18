@@ -328,6 +328,55 @@ export default function Home(props) {
   // arrOfAlerts.forEach((alert) => {
   //   console.log(alert);
   // });
+
+  function handleClickOn() {
+    console.log("handleClickOn:");
+
+    axios
+      .post(
+        `http://192.168.0.90/X_CSE.xml`,
+        "Novus?me=setUnitConfig&=&=&Unit_Name=&AC_Output_SD=1&DC_Output_SD=0&Bypass_Mode=0&Temperature_Mode=0&Power_Quality=0&PQ_AVR_THRESHOLD=1&Sense_Type=0&Auto_Cfg_Freq=1&Rated_Frequency=50&Rated_Input_Volt=230&Line_Q_Time=3&Refresh_Time=1",
+        {
+          auth: {
+            username: "",
+            password: "1111",
+          },
+        }
+      )
+      .then(function (response) {
+        console.log("responseeeeeeeeeeeeeeeeeeeeee: ", response); // this will print xml data structure
+        const data = convert.xml2js(response.data, {
+          compact: true,
+          spaces: 2,
+        });
+        console.log("data:", data);
+      });
+  }
+
+  function handleClickOff() {
+    console.log("handleClickOff:");
+
+    axios
+      .post(
+        `http://192.168.0.90/X_CSE.xml`,
+        "Novus?me=setUnitConfig&=&=&Unit_Name=&DC_Output_SD=0&Bypass_Mode=0&Temperature_Mode=0&Power_Quality=0&PQ_AVR_THRESHOLD=1&Sense_Type=0&Auto_Cfg_Freq=1&Rated_Frequency=50&Rated_Input_Volt=230&Line_Q_Time=3&Refresh_Time=1",
+        {
+          auth: {
+            username: "",
+            password: "1111",
+          },
+        }
+      )
+      .then(function (response) {
+        console.log("responseeeeeeeeeeeeeeeeeeeeee: ", response); // this will print xml data structure
+        const data = convert.xml2js(response.data, {
+          compact: true,
+          spaces: 2,
+        });
+        console.log("data:", data);
+      });
+  }
+
   let alertObj = {};
 
   async function getAlert() {
@@ -484,25 +533,19 @@ export default function Home(props) {
         addresses &&
           addresses.map(
             (address) =>
-              ((
-                alertObj[address.name] === undefined &&
-
-                alertObjFault[address.name] === undefined) 
-                
-                ||
+              ((alertObj[address.name] === undefined &&
+                alertObjFault[address.name] === undefined) ||
                 (alertObj[address.name] === -1 &&
                   alertObjFault[address.name] === -1)) &&
               notConnectedUps.push(address.name)
           );
       }
 
-
       {
         addresses &&
-          addresses.map(
-            (address) =>
-            console.log('alertObj[address.name]', alertObj[address.name])
-          )
+          addresses.map((address) =>
+            console.log("alertObj[address.name]", alertObj[address.name])
+          );
       }
 
       console.log("notConnectedUps:", notConnectedUps);
@@ -523,6 +566,9 @@ export default function Home(props) {
       )}
 
       <Container maxWidth="md">
+        <button onClick={handleClickOn}> On </button>
+        <button onClick={handleClickOff}> Off </button>
+
         {loading ? (
           <CircularProgress />
         ) : error ? (

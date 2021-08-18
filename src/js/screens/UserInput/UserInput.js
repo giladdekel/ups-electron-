@@ -80,6 +80,9 @@ export default function UserInput(props) {
 
   const [userInputAction31Status, setUserInputAction31Status] = useState();
 
+  const [userInputAction32Status, setUserInputAction32Status] = useState();
+
+
   const [userInputAction41Status, setUserInputAction41Status] = useState();
 
   const [userInputAction42Status, setUserInputAction42Status] = useState();
@@ -116,7 +119,7 @@ export default function UserInput(props) {
             setUserInputType2Status(data.data.newval[2]._text);
             setUserInputType3Status(data.data.newval[3]._text);
             setUserInputType4Status(data.data.newval[4]._text);
-            setUserInputLevel1Status(data.data.newval[5]._attributes.id);
+            setUserInputLevel1Status(data.data.newval[5]._text);
             setUserInputLevel2Status(data.data.newval[6]._text);
             setUserInputLevel3Status(data.data.newval[7]._text);
             setUserInputLevel4Status(data.data.newval[8]._text);
@@ -125,8 +128,9 @@ export default function UserInput(props) {
             setUserInputAction21Status(data.data.newval[11]._text);
             setUserInputAction22Status(data.data.newval[12]._text);
             setUserInputAction31Status(data.data.newval[13]._text);
-            setUserInputAction41Status(data.data.newval[14]._text);
-            setUserInputAction42Status(data.data.newval[15]._text);
+            setUserInputAction32Status(data.data.newval[14]._text);
+            setUserInputAction41Status(data.data.newval[15]._text);
+            setUserInputAction42Status(data.data.newval[16]._text);
 
             setLoading(false);
           })
@@ -299,14 +303,14 @@ export default function UserInput(props) {
                                     {userInputAction11Status}
                                   </StyledTableCell>
                                   <StyledTableCell>
-                                    {userInputAction12Status}
+                                    {userInputAction21Status}
                                   </StyledTableCell>
                                   <StyledTableCell>
-                                    {userInputAction21Status}
+                                    {userInputAction31Status}
                                   </StyledTableCell>
 
                                   <StyledTableCell>
-                                    {userInputAction22Status}
+                                    {userInputAction42Status}
                                   </StyledTableCell>
                                 </>
                               )}
@@ -323,17 +327,17 @@ export default function UserInput(props) {
                                   </StyledTableCell>
 
                                   <StyledTableCell>
-                                    {userInputAction31Status}
+                                    {userInputAction12Status}
                                   </StyledTableCell>
                                   <StyledTableCell>
-                                    {userInputAction41Status}
+                                    {userInputAction22Status}
                                   </StyledTableCell>
                                   <StyledTableCell>
-                                    {userInputAction42Status}
+                                    {userInputAction32Status}
                                   </StyledTableCell>
 
                                   <StyledTableCell>
-                                    {userInputType4Status}
+                                    {userInputAction42Status}
                                   </StyledTableCell>
                                 </>
                               )}

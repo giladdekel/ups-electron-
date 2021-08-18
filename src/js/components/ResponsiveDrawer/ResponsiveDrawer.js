@@ -30,6 +30,16 @@ import { ADDRESS_DETAILS_RESET } from "./../../constants/addressConstants";
 import { CircularProgress } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 
+
+
+import HomeIcon from '@material-ui/icons/Home';
+
+import ListIcon from '@material-ui/icons/List';
+
+import DnsIcon from '@material-ui/icons/Dns';
+
+import DonutLargeIcon from '@material-ui/icons/DonutLarge';
+
 import axios from "axios";
 
 const drawerWidth = 240;
@@ -145,7 +155,7 @@ function ResponsiveDrawer(props) {
         <NavLink to="/" activeStyle={activeStyle}>
           <ListItem button>
             <ListItemIcon>
-              <InboxIcon />
+              <HomeIcon />
             </ListItemIcon>
             <ListItemText primary="Home" />
           </ListItem>
@@ -156,7 +166,7 @@ function ResponsiveDrawer(props) {
         <NavLink to="/address/list" activeStyle={activeStyle}>
           <ListItem button>
             <ListItemIcon>
-              <InboxIcon />
+              <ListIcon />
             </ListItemIcon>
             <ListItemText primary="Addresses List" />
           </ListItem>
@@ -174,7 +184,7 @@ function ResponsiveDrawer(props) {
               >
                 <ListItem button>
                   <ListItemIcon>
-                    <InboxIcon />
+                    <DonutLargeIcon />
                   </ListItemIcon>
                   <ListItemText primary={address.name} />
                 </ListItem>

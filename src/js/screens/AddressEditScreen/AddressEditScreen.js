@@ -54,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddressEditScreen(props) {
+  console.log('props:', props)
   const classes = useStyles();
   const addressId = props.match.params.id;
   const [name, setName] = useState("");

@@ -4,6 +4,10 @@ import thunk from "redux-thunk";
 import {
   addressDeleteReducer,
   addressDetailsReducer,
+
+  addressNameReducer,
+  addressIpReducer,
+
   addressListReducer,
   addressCreateReducer,
   // addressSigninReducer,
@@ -23,6 +27,14 @@ const reducer = combineReducers({
   // addressSignin: addressSigninReducer,
 
   addressDetails: addressDetailsReducer,
+
+
+  addressName: addressNameReducer,
+
+
+  addressIp: addressIpReducer,
+
+
   addressUpdate: addressUpdateReducer,
 
   addressList: addressListReducer,
