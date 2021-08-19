@@ -18,7 +18,7 @@ import { useEffect } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 
-// import "./AddressListScreen.scss";
+import "./HomeScreen.scss";
 import { CircularProgress, Fab } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import IconButton from "@material-ui/core/IconButton";
@@ -478,47 +478,7 @@ export default function Home(props) {
     }
   }
 
-  // let alertObjFault = {};
 
-  // async function getFault() {
-  //   let promises = [];
-  //   try {
-  //     if (addresses) {
-  //       console.log("addresses:", addresses);
-  //       addresses.forEach((address) => {
-  //         promises.push(
-  //           axios
-  //             .get(`http://${address.ip}/xml/get_live_status.xml?alarms_faults`)
-  //             .then(function (response) {
-  //               // console.log("responseeeeeeeeeeeeeeeeeeeeee: ", response); // this will print xml data structure
-  //               const data = convert.xml2js(response.data, {
-  //                 compact: true,
-  //                 spaces: 2,
-  //               });
-  //               let dataFault = data.data.faults._text;
-  //               // console.log("dataFault:", dataFault);
-
-  //               if (alertObj[address.name] !== Number(dataFault)) {
-  //                 // console.log("alertObj[address.ip] !== Number(dataFault)");
-  //                 alertObj[address.name] = Number(dataFault);
-  //               }
-  //             })
-  //             .catch(function (error) {
-  //               console.log("eroorrrr: ", error);
-  //               // res.status(500).json({ error });
-  //             })
-  //             .then(function () {
-  //               // always executed
-  //             })
-  //         );
-  //         // console.log("promises:", promises);
-  //       });
-  //     }
-  //   } catch (err) {
-  //     console.log("err:", err);
-  //   }
-  //   Promise.all(promises).then(() => setFaults(alertObj));
-  // }
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -541,12 +501,12 @@ export default function Home(props) {
           );
       }
 
-      {
-        addresses &&
-          addresses.map((address) =>
-            console.log("alertObj[address.name]", alertObj[address.name])
-          );
-      }
+      // {
+      //   addresses &&
+      //     addresses.map((address) =>
+      //       console.log("alertObj[address.name]", alertObj[address.name])
+      //     );
+      // }
 
       console.log("notConnectedUps:", notConnectedUps);
 
@@ -557,17 +517,14 @@ export default function Home(props) {
 
   const classes = useStyles();
   return (
-    <React.Fragment>
+    <React.Fragment >
       <CssBaseline />
-      {loadingDelete && <CircularProgress />}
-      {errorDelete && <Alert severity="error">{errorDelete}</Alert>}
-      {successDelete && (
-        <Alert severity="success">Address Deleted Successfully</Alert>
-      )}
+ 
+      <Container className="home-screen"  maxWidth="md">
+        {/* <button onClick={handleClickOn}> On </button>
+        <button onClick={handleClickOff}> Off </button> */}
 
-      <Container maxWidth="md">
-        <button onClick={handleClickOn}> On </button>
-        <button onClick={handleClickOff}> Off </button>
+        <h1 className="rainbow-text">UPS Admin</h1>
 
         {loading ? (
           <CircularProgress />

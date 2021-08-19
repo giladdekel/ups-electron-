@@ -25,6 +25,25 @@ import { CircularProgress } from "@material-ui/core";
 import axios from "axios";
 import convert from "xml-js";
 
+import InfoIcon from "@material-ui/icons/Info";
+import SettingsInputComponentIcon from "@material-ui/icons/SettingsInputComponent";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+
+import AssignmentIcon from "@material-ui/icons/Assignment";
+
+import Battery90Icon from "@material-ui/icons/Battery90";
+
+import PowerIcon from "@material-ui/icons/Power";
+
+// import IconButton from '@material-ui/core/IconButton';
+
+// import Button from "@material-ui/core/Button";
+
+// import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
+
+import BottomNavigation from "@material-ui/core/BottomNavigation";
+import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
+
 // const ENDPOINT = "http://192.168.0.91:5000";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -65,7 +84,12 @@ export default function PowerOutage(props) {
   const [error, setError] = useState(false);
 
   const [loading, setLoading] = useState(true);
+
+  const [value, setValue] = React.useState(6);
+
   const ip = props.match.params.id;
+
+  const upsName = props.match.params.name;
   // console.log("ip:", ip);
   // const ip = "192.168.0.90";
 
@@ -84,7 +108,7 @@ export default function PowerOutage(props) {
               spaces: 2,
             });
 
-            console.log("data:", data.data.form.table.row);
+            // console.log("data:", data.data.form.table.row);
 
             let rows = data.data.form.table.row;
 
@@ -162,21 +186,63 @@ export default function PowerOutage(props) {
 
   return (
     <>
-      <div
-        style={{
-          backgroundImage: `url(https://cdn.pixabay.com/photo/2016/01/19/17/15/windmills-1149604_960_720.jpg)`,
-          height: "1000px",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          position: "relative",
-        }}
-      >
+      <div>
         <React.Fragment>
           {" "}
           <CssBaseline />
           <Container maxWidth="sm">
-            <h1 className="rainbow-text"> UPS {ip} - Power Outage </h1>{" "}
+            <BottomNavigation
+              value={value}
+              onChange={(event, newValue) => {
+                setValue(newValue);
+              }}
+              showLabels
+              className={classes.root}
+            >
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/UPSSpecification/${ip}/${upsName}`);
+                }}
+                label="UPS Specification"
+                icon={<InfoIcon />}
+              />
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/inputOutput/${ip}/${upsName}`);
+                }}
+                label="Input & Output"
+                icon={<SettingsInputComponentIcon />}
+              />
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/BatteryInverter/${ip}/${upsName}`);
+                }}
+                label="Battery & Inverter"
+                icon={<Battery90Icon />}
+              />{" "}
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/RelayStatus/${ip}/${upsName}`);
+                }}
+                label="Relay & Load Shed"
+                icon={<AssignmentIcon />}
+              />
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/UserInput/${ip}/${upsName}`);
+                }}
+                label="User Input"
+                icon={<AccountCircleIcon />}
+              />
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/PowerOutage/${ip}/${upsName}`);
+                }}
+                label="Power Outage"
+                icon={<PowerIcon />}
+              />
+            </BottomNavigation>
+            <h1 className="rainbow-text"> Power Outage - {upsName} </h1>{" "}
             {error ? (
               <Alert severity="error">
                 Error- cheack if the UPS is connected
@@ -233,7 +299,6 @@ export default function PowerOutage(props) {
                                 </StyledTableCell>
 
                                 <StyledTableCell>
-                              
                                   {Math.floor(
                                     (Number(
                                       row.field[2].countdown &&
@@ -242,42 +307,51 @@ export default function PowerOutage(props) {
                                   )}
                                   hr{" "}
                                   {Math.floor(
-                                    (Number(
+                                    ((Number(
                                       row.field[2].countdown &&
                                         row.field[2].countdown._attributes.value
-                                    ) || 0)% 3600/60) }
+                                    ) || 0) %
+                                      3600) /
+                                      60
+                                  )}
                                   min{" "}
                                   {Math.floor(
                                     ((Number(
                                       row.field[2].countdown &&
                                         row.field[2].countdown._attributes.value
-                                    ) || 0) % 3600 ) % 60)}
-                                   sec
+                                    ) || 0) %
+                                      3600) %
+                                      60
+                                  )}
+                                  sec
                                 </StyledTableCell>
 
                                 <StyledTableCell>
-                             
                                   {Math.floor(
                                     (Number(
                                       row.field[3].countdown &&
                                         row.field[3].countdown._attributes.value
                                     ) || 0) / 3600
                                   )}
-                                   hr
-                                   {" "}
-                                  {Math.floor(
-                                    (Number(
-                                      row.field[3].countdown &&
-                                        row.field[3].countdown._attributes.value
-                                    ) || 0)% 3600/60) }
-                                   min
-                                   {" "}
+                                  hr{" "}
                                   {Math.floor(
                                     ((Number(
                                       row.field[3].countdown &&
                                         row.field[3].countdown._attributes.value
-                                    ) || 0) % 3600 ) % 60)}
-                                   sec
+                                    ) || 0) %
+                                      3600) /
+                                      60
+                                  )}
+                                  min{" "}
+                                  {Math.floor(
+                                    ((Number(
+                                      row.field[3].countdown &&
+                                        row.field[3].countdown._attributes.value
+                                    ) || 0) %
+                                      3600) %
+                                      60
+                                  )}
+                                  sec
                                 </StyledTableCell>
                               </StyledTableRow>
                             )

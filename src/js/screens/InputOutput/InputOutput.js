@@ -25,9 +25,22 @@ import { CircularProgress } from "@material-ui/core";
 import axios from "axios";
 import convert from "xml-js";
 
-import { useDispatch, useSelector } from "react-redux";
-import { deleteAddress, listAddresses } from "./../../actions/addressActions";
-import { ADDRESS_DETAILS_RESET } from "./../../constants/addressConstants";
+// import { useDispatch, useSelector } from "react-redux";
+// import { deleteAddress, listAddresses } from "./../../actions/addressActions";
+// import { ADDRESS_DETAILS_RESET } from "./../../constants/addressConstants";
+
+import InfoIcon from "@material-ui/icons/Info";
+import SettingsInputComponentIcon from "@material-ui/icons/SettingsInputComponent";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+
+import AssignmentIcon from "@material-ui/icons/Assignment";
+
+import Battery90Icon from "@material-ui/icons/Battery90";
+
+import PowerIcon from "@material-ui/icons/Power";
+
+import BottomNavigation from "@material-ui/core/BottomNavigation";
+import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 
 // const ENDPOINT = "http://192.168.1.218:5000";
 
@@ -57,6 +70,7 @@ const useStyles = makeStyles({
 
 export default function InputOutput(props) {
   // const [ip, setIp] = useState(props.match.params.id);
+  const [value, setValue] = React.useState(1);
 
   const [voltage, setVoltage] = useState(false);
   const [frequency, setFrequency] = useState(false);
@@ -92,7 +106,10 @@ export default function InputOutput(props) {
 
   // const ip = "192.168.0.90";
   let ip = props.match.params.id;
-  console.log("ip:", ip);
+
+  const upsName = props.match.params.name;
+
+  // console.log("ip:", ip);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -176,23 +193,65 @@ export default function InputOutput(props) {
 
   return (
     <>
-      <div
-        style={{
-          backgroundImage: `url(https://cdn.pixabay.com/photo/2016/01/19/17/15/windmills-1149604_960_720.jpg)`,
-          height: "1000px",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          position: "relative",
-        }}
-      >
+      <div>
         <React.Fragment>
           {" "}
           <CssBaseline />
           <Container maxWidth="sm">
+            <BottomNavigation
+              value={value}
+              onChange={(event, newValue) => {
+                setValue(newValue);
+              }}
+              showLabels
+              className={classes.root}
+            >
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/UPSSpecification/${ip}/${upsName}`);
+                }}
+                label="UPS Specification"
+                icon={<InfoIcon />}
+              />
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/inputOutput/${ip}/${upsName}`);
+                }}
+                label="Input & Output"
+                icon={<SettingsInputComponentIcon />}
+              />
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/BatteryInverter/${ip}/${upsName}`);
+                }}
+                label="Battery & Inverter"
+                icon={<Battery90Icon />}
+              />{" "}
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/RelayStatus/${ip}/${upsName}`);
+                }}
+                label="Relay & Load Shed"
+                icon={<AssignmentIcon />}
+              />
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/UserInput/${ip}/${upsName}`);
+                }}
+                label="User Input"
+                icon={<AccountCircleIcon />}
+              />
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/PowerOutage/${ip}/${upsName}`);
+                }}
+                label="Power Outage"
+                icon={<PowerIcon />}
+              />
+            </BottomNavigation>
             {/* {error && <h1>error</h1>} */}
             <h1 className="rainbow-text">
-              Input & Output - {props.match.params.id}{" "}
+              Input & Output - {upsName}
             </h1>{" "}
             {error ? (
               <>

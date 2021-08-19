@@ -98,7 +98,7 @@ function App() {
           <Switch>
             <Route path="/" component={HomeScreen} exact></Route>
 
-            <Route path="/address/list" component={AddressListScreen}></Route>
+            <Route path="/address/list" component={AddressListScreen} exact ></Route>
 
             {/* <Route
               path="/address/create"
@@ -113,27 +113,38 @@ function App() {
             <Route path="/address/add" component={AddressAddScreen}></Route>
 
             <Route
-              path="/address/info/:id"
+              path="/address/info/:id/:name"
               component={AddressInfoScreen}
+              exact
             ></Route>
 
-            <Route path="/inputoutput/:id" component={InputOutput}></Route>
+
+
+            {/* <Route
+              path="/address/info/:name"
+              component={AddressInfoScreen}
+              exact
+            ></Route> */}
+
+
+
+            <Route path="/inputoutput/:id/:name" component={InputOutput}></Route>
 
             <Route
-              path="/BatteryInverter/:id"
+              path="/BatteryInverter/:id/:name"
               component={BatteryInverter}
             ></Route>
 
-            <Route path="/RelayStatus/:id" component={RelayStatus}></Route>
+            <Route path="/RelayStatus/:id/:name" component={RelayStatus}></Route>
 
             <Route
-              path="/UPSSpecification/:id"
+              path="/UPSSpecification/:id/:name"
               component={UPSSpecification}
             ></Route>
 
-            <Route path="/UserInput/:id" component={UserInput}></Route>
+            <Route path="/UserInput/:id/:name" component={UserInput}></Route>
 
-            <Route path="/PowerOutage/:id" component={PowerOutage}></Route>
+            <Route path="/PowerOutage/:id/:name" component={PowerOutage}></Route>
 
             {/* <Route path="/signin" component={SigninScreen}></Route>
 

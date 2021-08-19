@@ -131,7 +131,7 @@ export const addressIpReducer = (state = { loading: true }, action) => {
     case ADDRESS_IP_FAIL:
       return { loading: false, error: true };
     case ADDRESS_IP_RESET:
-      return { address: false};
+      return { };
     default:
       return state;
   }

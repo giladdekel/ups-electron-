@@ -25,6 +25,19 @@ import { CircularProgress } from "@material-ui/core";
 import axios from "axios";
 import convert from "xml-js";
 
+import InfoIcon from "@material-ui/icons/Info";
+import SettingsInputComponentIcon from "@material-ui/icons/SettingsInputComponent";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+
+import AssignmentIcon from "@material-ui/icons/Assignment";
+
+import Battery90Icon from "@material-ui/icons/Battery90";
+
+import PowerIcon from "@material-ui/icons/Power";
+
+import BottomNavigation from "@material-ui/core/BottomNavigation";
+import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
+
 // const ENDPOINT = "http://192.168.0.91:5000";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -52,6 +65,8 @@ const useStyles = makeStyles({
 });
 
 export default function UserInput(props) {
+  const [value, setValue] = React.useState(5);
+
   const [mode, setMode] = useState();
 
   const [userInputType1Status, setUserInputType1Status] = useState();
@@ -82,7 +97,6 @@ export default function UserInput(props) {
 
   const [userInputAction32Status, setUserInputAction32Status] = useState();
 
-
   const [userInputAction41Status, setUserInputAction41Status] = useState();
 
   const [userInputAction42Status, setUserInputAction42Status] = useState();
@@ -93,6 +107,9 @@ export default function UserInput(props) {
   const ip = props.match.params.id;
   // console.log("ip:", ip);
   // const ip = "192.168.0.90";
+
+  const upsName = props.match.params.name;
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -163,21 +180,63 @@ export default function UserInput(props) {
 
   return (
     <>
-      <div
-        style={{
-          backgroundImage: `url(https://cdn.pixabay.com/photo/2016/01/19/17/15/windmills-1149604_960_720.jpg)`,
-          height: "1000px",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          position: "relative",
-        }}
-      >
+      <div>
         <React.Fragment>
           {" "}
           <CssBaseline />
           <Container maxWidth="sm">
-            <h1 className="rainbow-text"> UPS {ip} - User Input Status </h1>{" "}
+            <BottomNavigation
+              value={value}
+              onChange={(event, newValue) => {
+                setValue(newValue);
+              }}
+              showLabels
+              className={classes.root}
+            >
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/UPSSpecification/${ip}/${upsName}`);
+                }}
+                label="UPS Specification"
+                icon={<InfoIcon />}
+              />
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/inputOutput/${ip}/${upsName}`);
+                }}
+                label="Input & Output"
+                icon={<SettingsInputComponentIcon />}
+              />
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/BatteryInverter/${ip}/${upsName}`);
+                }}
+                label="Battery & Inverter"
+                icon={<Battery90Icon />}
+              />{" "}
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/RelayStatus/${ip}/${upsName}`);
+                }}
+                label="Relay & Load Shed"
+                icon={<AssignmentIcon />}
+              />
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/UserInput/${ip}/${upsName}`);
+                }}
+                label="User Input"
+                icon={<AccountCircleIcon />}
+              />
+              <BottomNavigationAction
+                onClick={() => {
+                  props.history.push(`/PowerOutage/${ip}/${upsName}`);
+                }}
+                label="Power Outage"
+                icon={<PowerIcon />}
+              />
+            </BottomNavigation>
+            <h1 className="rainbow-text"> User Input - {upsName} </h1>{" "}
             {error ? (
               <Alert severity="error">
                 Error- cheack if the UPS is connected

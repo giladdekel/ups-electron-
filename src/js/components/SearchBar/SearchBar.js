@@ -46,7 +46,7 @@ export default function SearchBar(props) {
 
   useEffect(() => {
     if (address) {
-      props.history.push(`/address/info/${address.ip}`);
+      props.history.push(`/address/info/${address.ip}/${address.name}`);
     }
 
     if (errorAddressName) {
@@ -86,6 +86,8 @@ export default function SearchBar(props) {
       /> */}
 
       <Autocomplete
+
+      // className="search-bar"
         freeSolo
         id="free-solo-2-demo"
         disableClearable
@@ -94,6 +96,8 @@ export default function SearchBar(props) {
         onSelect={(e) => setName(e.target.value)}
         renderInput={(params) => (
           <TextField
+          className="search-bar"
+
             {...params}
             label="Search input"
             margin="normal"

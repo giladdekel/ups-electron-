@@ -39,6 +39,20 @@ import Button from "@material-ui/core/Button";
 
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 
+
+import "./AddressInfoScreen.scss"
+
+
+
+
+
+
+
+
+
+
+
+
 const useStyles = makeStyles({
   root: {
     width: 500,
@@ -47,10 +61,15 @@ const useStyles = makeStyles({
 
 export default function AddressInfoScreen(props) {
   let ip = props.match.params.id;
-  console.log("ip:", ip);
+
+
+  let nameUps = props.match.params.name;
+  // console.log('namewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww:', name)
+
+  // console.log("ip:", ip);
 
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState();
 
   ////////////////////////////////////alerts start ////////////////////////////
 
@@ -63,10 +82,10 @@ export default function AddressInfoScreen(props) {
     error: errorAddressIp,
     address,
   } = addressIp;
-  console.log(
-    "address==============================================================================:",
-    address
-  );
+  // console.log(
+  //   "address==============================================================================:",
+  //   address
+  // );
 
   const addressDelete = useSelector((state) => state.addressDelete);
   const {
@@ -200,7 +219,7 @@ export default function AddressInfoScreen(props) {
       }
     }
 
-    console.log(placesWith1);
+    // console.log(placesWith1);
     // [5, 15];
 
     for (let i = 0; i < placesWith1.length; i++) {
@@ -404,7 +423,7 @@ export default function AddressInfoScreen(props) {
   ////////////////////////alerts end//////////////////////////////////////
 
   return (
-    <Container maxWidth="sm">
+    <Container className="addressInfo" maxWidth="sm">
       {alerts &&
         Object.entries(alerts)
           .sort(([key1], [key2]) => Number(key1 > key2) - 0.5)
@@ -441,9 +460,9 @@ export default function AddressInfoScreen(props) {
         ))}
 
       {address && (
-        <h2>
-          {address.name} - {ip}{" "}
-        </h2>
+        <h1 className="rainbow-text">
+          {nameUps} - {ip}{" "}
+        </h1>
       )}
 
       <BottomNavigation
@@ -456,42 +475,42 @@ export default function AddressInfoScreen(props) {
       >
         <BottomNavigationAction
           onClick={() => {
-            props.history.push(`/UPSSpecification/${ip}`);
+            props.history.push(`/UPSSpecification/${ip}/${nameUps}`);
           }}
           label="UPS Specification"
           icon={<InfoIcon />}
         />
         <BottomNavigationAction
           onClick={() => {
-            props.history.push(`/inputOutput/${ip}`);
+            props.history.push(`/inputOutput/${ip}/${nameUps}`);
           }}
           label="Input & Output"
           icon={<SettingsInputComponentIcon />}
         />
         <BottomNavigationAction
           onClick={() => {
-            props.history.push(`/BatteryInverter/${ip}`);
+            props.history.push(`/BatteryInverter/${ip}/${nameUps}`);
           }}
           label="Battery & Inverter"
           icon={<Battery90Icon />}
         />{" "}
         <BottomNavigationAction
           onClick={() => {
-            props.history.push(`/RelayStatus/${ip}`);
+            props.history.push(`/RelayStatus/${ip}/${nameUps}`);
           }}
           label="Relay & Load Shed"
           icon={<AssignmentIcon />}
         />
         <BottomNavigationAction
           onClick={() => {
-            props.history.push(`/UserInput/${ip}`);
+            props.history.push(`/UserInput/${ip}/${nameUps}`);
           }}
           label="User Input"
           icon={<AccountCircleIcon />}
         />
         <BottomNavigationAction
           onClick={() => {
-            props.history.push(`/PowerOutage/${ip}`);
+            props.history.push(`/PowerOutage/${ip}/${nameUps}`);
           }}
           label="Power Outage"
           icon={<PowerIcon />}
@@ -511,7 +530,7 @@ export default function AddressInfoScreen(props) {
         className={classes.button}
         startIcon={<PowerSettingsNewIcon />}
       >
-        Off
+        RESET
       </Button>
 
       {/* <button onClick={handleClickOff}> Off </button> */}

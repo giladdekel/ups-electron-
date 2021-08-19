@@ -4,13 +4,13 @@ import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import Alert from "@material-ui/lab/Alert";
 
-import AudioPlayer from "react-h5-audio-player";
-// import "react-h5-audio-player/lib/styles.css";
-// import { notifier } from 'node-notifier';
-import socketIOClient from "socket.io-client";
+// import AudioPlayer from "react-h5-audio-player";
+// // import "react-h5-audio-player/lib/styles.css";
+// // import { notifier } from 'node-notifier';
+// import socketIOClient from "socket.io-client";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -25,6 +25,22 @@ import { CircularProgress } from "@material-ui/core";
 import axios from "axios";
 import convert from "xml-js";
 
+
+
+
+import InfoIcon from "@material-ui/icons/Info";
+import SettingsInputComponentIcon from "@material-ui/icons/SettingsInputComponent";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+
+import AssignmentIcon from "@material-ui/icons/Assignment";
+
+import Battery90Icon from "@material-ui/icons/Battery90";
+
+import PowerIcon from "@material-ui/icons/Power";
+
+
+import BottomNavigation from "@material-ui/core/BottomNavigation";
+import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 // const ENDPOINT = "http://192.168.0.91:5000";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -52,6 +68,9 @@ const useStyles = makeStyles({
 });
 
 export default function UPSSpecification(props) {
+
+  const [value, setValue] = React.useState(0);
+
   const [mode, setMode] = useState();
 
   const [spec_CName, setSpec_CName] = useState();
@@ -86,6 +105,9 @@ export default function UPSSpecification(props) {
 
   const [loading, setLoading] = useState(true);
   const ip = props.match.params.id;
+
+  const upsName = props.match.params.name;
+
   // console.log("ip:", ip);
   // const ip = "192.168.0.90";
 
@@ -157,20 +179,71 @@ export default function UPSSpecification(props) {
   return (
     <>
       <div
-        style={{
-          backgroundImage: `url(https://cdn.pixabay.com/photo/2016/01/19/17/15/windmills-1149604_960_720.jpg)`,
-          height: "1000px",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          position: "relative",
-        }}
+  
       >
         <React.Fragment>
           {" "}
           <CssBaseline />
           <Container maxWidth="sm">
-            <h1 className="rainbow-text"> UPS {ip} - UPS Specification </h1>{" "}
+
+
+
+          <BottomNavigation
+        value={value}
+        onChange={(event, newValue) => {
+          setValue(newValue);
+        }}
+        showLabels
+        className={classes.root}
+      >
+        <BottomNavigationAction
+          onClick={() => {
+            props.history.push(`/UPSSpecification/${ip}/${upsName}`);
+          }}
+          label="UPS Specification"
+          icon={<InfoIcon />}
+        />
+        <BottomNavigationAction
+          onClick={() => {
+            props.history.push(`/inputOutput/${ip}/${upsName}`);
+          }}
+          label="Input & Output"
+          icon={<SettingsInputComponentIcon />}
+        />
+        <BottomNavigationAction
+          onClick={() => {
+            props.history.push(`/BatteryInverter/${ip}/${upsName}`);
+          }}
+          label="Battery & Inverter"
+          icon={<Battery90Icon />}
+        />{" "}
+        <BottomNavigationAction
+          onClick={() => {
+            props.history.push(`/RelayStatus/${ip}/${upsName}`);
+          }}
+          label="Relay & Load Shed"
+          icon={<AssignmentIcon />}
+        />
+        <BottomNavigationAction
+          onClick={() => {
+            props.history.push(`/UserInput/${ip}/${upsName}`);
+          }}
+          label="User Input"
+          icon={<AccountCircleIcon />}
+        />
+        <BottomNavigationAction
+          onClick={() => {
+            props.history.push(`/PowerOutage/${ip}/${upsName}`);
+          }}
+          label="Power Outage"
+          icon={<PowerIcon />}
+        />
+      </BottomNavigation>
+
+   
+
+
+            <h1 className="rainbow-text">UPS Specification - {upsName} </h1>{" "}
             {error ? (
               <Alert severity="error">
                 Error- cheack if the UPS is connected

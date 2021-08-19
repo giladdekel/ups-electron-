@@ -24,18 +24,15 @@ import Alert from "@material-ui/lab/Alert";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/Add";
 
-
-
-
-
 import axios from "axios";
 
 import convert from "xml-js";
 
 // import Link from "@material-ui/core/Link";
 
-import { Link } from "react-router-dom";
-import { Button } from "@material-ui/core/Button";
+// import { Link } from "react-router-dom";
+import Button from "@material-ui/core/Button";
+import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 let obj = {};
 
 const StyledTableCell = withStyles((theme) => ({
@@ -63,7 +60,6 @@ const useStyles = makeStyles({
 });
 
 export default function AddressListScreen(props) {
-
   ////////////////////////////////////alerts start ////////////////////////////
 
   const addressList = useSelector((state) => state.addressList);
@@ -107,6 +103,74 @@ export default function AddressListScreen(props) {
   const [faults, setFaults] = useState();
 
   const [upsError, setUpsError] = useState([]);
+
+  const [restError, setRestError] = useState(false);
+
+  function handleClickOn(address) {
+    console.log("handleClickOn:");
+
+    setRestError(false);
+
+    try {
+      axios
+        .post(
+          `http://${address.ip}/X_CSE.xml`,
+          "Novus?me=setUnitConfig&=&=&Unit_Name=&AC_Output_SD=1&DC_Output_SD=0&Bypass_Mode=0&Temperature_Mode=0&Power_Quality=0&PQ_AVR_THRESHOLD=1&Sense_Type=0&Auto_Cfg_Freq=1&Rated_Frequency=50&Rated_Input_Volt=230&Line_Q_Time=3&Refresh_Time=1",
+          {
+            auth: {
+              username: "",
+              password: "1111",
+            },
+          }
+        )
+        .then(function (response) {
+          // console.log("responseeeeeeeeeeeeeeeeeeeeee: ", response); // this will print xml data structure
+          const data = convert.xml2js(response.data, {
+            compact: true,
+            spaces: 2,
+          });
+          // console.log("data:", data);
+        })
+        .catch(function (error) {
+          console.log("eroorrrr: ", error);
+
+          setRestError(true);
+
+          setTimeout(() => {
+            setRestError(false);
+          }, 5000);
+        })
+        .then(function () {
+          // always executed
+        });
+    } catch (err) {
+      console.log("err:", err);
+      setRestError(true);
+      setTimeout(() => {
+        setRestError(false);
+      }, 5000);
+    }
+
+    // axios
+    //   .post(
+    //     `http://${address.ip}/X_CSE.xml`,
+    //     "Novus?me=setUnitConfig&=&=&Unit_Name=&AC_Output_SD=1&DC_Output_SD=0&Bypass_Mode=0&Temperature_Mode=0&Power_Quality=0&PQ_AVR_THRESHOLD=1&Sense_Type=0&Auto_Cfg_Freq=1&Rated_Frequency=50&Rated_Input_Volt=230&Line_Q_Time=3&Refresh_Time=1",
+    //     {
+    //       auth: {
+    //         username: "",
+    //         password: "1111",
+    //       },
+    //     }
+    //   )
+    //   .then(function (response) {
+    //     console.log("responseeeeeeeeeeeeeeeeeeeeee: ", response); // this will print xml data structure
+    //     const data = convert.xml2js(response.data, {
+    //       compact: true,
+    //       spaces: 2,
+    //     });
+    //     console.log("data:", data);
+    //   });
+  }
 
   function convertAlert(num) {
     // console.log('num :', num);
@@ -219,7 +283,6 @@ export default function AddressListScreen(props) {
   let alertObj = {};
 
   async function getAlert() {
-    let promises = [];
     try {
       if (addresses) {
         addresses.forEach((address) => {
@@ -345,7 +408,7 @@ export default function AddressListScreen(props) {
           );
       }
 
-      console.log("notConnectedUps:", notConnectedUps);
+      // console.log("notConnectedUps:", notConnectedUps);
 
       setUpsError(notConnectedUps);
     }, 1000);
@@ -365,7 +428,7 @@ export default function AddressListScreen(props) {
         <Alert severity="success">Address Deleted Successfully</Alert>
       )}
 
-      <Container maxWidth="md">
+      <Container className="AddressListScreen" maxWidth="md">
         {loading ? (
           <CircularProgress />
         ) : error ? (
@@ -416,6 +479,7 @@ export default function AddressListScreen(props) {
             >
               <AddIcon />
             </Fab>
+            {restError && <Alert severity="error">UPS is not connected</Alert>}
             <TableContainer component={Paper}>
               {" "}
               <Table className={classes.table} aria-label="customized table">
@@ -426,6 +490,7 @@ export default function AddressListScreen(props) {
                     <StyledTableCell align="right">Date Add</StyledTableCell>
                     <StyledTableCell align="right">Edit</StyledTableCell>
                     <StyledTableCell align="right">Delete</StyledTableCell>
+                    <StyledTableCell align="right">Power</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -461,6 +526,17 @@ export default function AddressListScreen(props) {
                               onClick={() => deleteHandler(address)}
                             />{" "}
                           </IconButton>
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          <Button
+                            onClick={() => handleClickOn(address)}
+                            variant="contained"
+                            color="secondary"
+                            className={classes.button}
+                            startIcon={<PowerSettingsNewIcon />}
+                          >
+                            RESET
+                          </Button>
                         </StyledTableCell>
                       </StyledTableRow>
                     ))}
